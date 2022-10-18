@@ -1,0 +1,3431 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    154191,       3423]
+NotebookOptionsPosition[    152208,       3380]
+NotebookOutlinePosition[    152637,       3397]
+CellTagsIndexPosition[    152594,       3394]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+    "This", " ", "program", " ", "supports", " ", "computation", " ", "of", 
+     " ", "SL", 
+     RowBox[{"(", "3", ")"}], " ", "given", " ", "extended", " ", "Gauss", 
+     " ", "or", " ", "braid", " ", "notation", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"not", " ", "normal", " ", "Gauss", " ", "notation"}], ",", 
+        " ", 
+        RowBox[{
+        "as", " ", "this", " ", "is", " ", "not", " ", "a", " ", "proper", 
+         " ", "knot", " ", "invariant"}]}], ")"}], ".", " ", "A"}], " ", 
+     "function", " ", "takes", " ", "a", " ", "knot", " ", "in", " ", "braid",
+      " ", "notation"}], ",", " ", 
+    RowBox[{
+    "converts", " ", "it", "\[IndentingNewLine]", "to", " ", "Gauss", " ", 
+     "notation"}], ",", " ", 
+    RowBox[{
+    "and", " ", "converts", " ", "the", " ", "Gauss", " ", "notation", " ", 
+     "to", " ", "a", " ", "large", " ", "jumble", " ", "of", " ", "raw", " ", 
+     "data", " ", "for", " ", "the", " ", "main", " ", "function", " ", "to", 
+     " ", "work", " ", 
+     RowBox[{"on", ".", " ", "The"}], " ", "polynomial", " ", "returned", " ",
+      "uses", " ", "the", " ", "variable", " ", "y", " ", "as", " ", "used", 
+     " ", "in", " ", "Frohman", " ", 
+     RowBox[{"(", "2017", ")"}]}], ",", " ", 
+    RowBox[{
+    "except", " ", "the", " ", "unknot", "\[IndentingNewLine]", "is", " ", 
+     "normalized", " ", "to", " ", "be", " ", "1.", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", "The", " ", "notation", " ", "used", " ", "for", 
+     " ", "the", " ", "raw", " ", "SL", 
+     RowBox[{"(", "3", ")"}], " ", "computation", " ", "is", " ", "my", " ", 
+     "own", " ", "creation", " ", "and", " ", "relies", " ", "heavily", " ", 
+     "on", " ", "treating", " ", "a", " ", "knot", " ", "or", " ", "link", 
+     " ", "as", " ", "a", " ", "collection", " ", "of", " ", 
+     RowBox[{"overstrands", ".", " ", "These"}], " ", "overstrands", " ", 
+     "are", " ", "numbered"}], ",", " ", 
+    RowBox[{
+    "and", " ", "there", " ", "is", " ", "data", " ", "from", " ", "each", 
+     "\[IndentingNewLine]", "crossing", " ", "in", " ", "the", " ", "form", 
+     " ", "of", " ", "a", " ", 
+     RowBox[{"triple", ":", " ", 
+      RowBox[{"the", " ", "overstrand"}]}]}], ",", " ", 
+    RowBox[{"and", " ", "the", " ", "two", " ", 
+     RowBox[{"understrands", ".", " ", "There"}], " ", "are", " ", "then", 
+     " ", "other", " ", "lists", " ", "that", " ", "keep", " ", "track", " ", 
+     "of", " ", "the", " ", "starting", " ", "and", " ", "ending", " ", 
+     "crossings", " ", "of", " ", "a", " ", "strand"}], ",", " ", 
+    RowBox[{
+    "as", " ", "well", " ", "as", " ", "the", " ", "other", " ", "strand", 
+     " ", "it", " ", "passes", " ", 
+     RowBox[{"over", ".", "\[IndentingNewLine]", "Because"}], " ", 
+     "computing", " ", "SL", 
+     RowBox[{"(", "3", ")"}], " ", "requires", " ", "creating", " ", 
+     "trivalent", " ", "graphs"}], ",", " ", 
+    RowBox[{
+    "another", " ", "list", " ", "is", " ", "used", " ", "to", " ", "keep", 
+     " ", "track", " ", "of", " ", "\"\<crossings\>\"", " ", "that", " ", 
+     "entail", " ", "three", " ", "strands", " ", "meeting", " ", "at", " ", 
+     "a", " ", 
+     RowBox[{
+     "point", ".", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      "Knowledge"}], " ", "of", " ", "this", " ", "notation", " ", "is", " ", 
+     "not", " ", "required", " ", "to", " ", "use", " ", "the", " ", 
+     "program"}], ",", " ", 
+    RowBox[{
+     RowBox[{"however", ".", " ", "All"}], " ", "that", " ", "is", " ", 
+     "necessary", " ", "is", " ", "to", " ", "input", " ", "the", " ", 
+     "braid", " ", "or", " ", "extended", " ", "Gauss", " ", 
+     RowBox[{
+     "notation", ".", "\[IndentingNewLine]", "\[IndentingNewLine]", "The"}], 
+     " ", "functions", " ", "meant", " ", "for", " ", "use", " ", "are", " ", 
+     "SLthreeGauss", " ", "and", " ", "SLthreeBraid"}], ",", " ", 
+    RowBox[{
+    "which", " ", "both", " ", "take", " ", "a", " ", "list", " ", "as", " ", 
+     "input", " ", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+        "or", " ", "for", " ", "the", " ", "Gauss", " ", "notation", " ", 
+         "of", " ", "a", " ", "link"}], ",", " ", 
+        RowBox[{"a", " ", "list", " ", "of", " ", "lists"}]}], ")"}], ".", 
+      " ", "Examples"}], " ", "are", " ", "listed", " ", "at", " ", "the", 
+     " ", 
+     RowBox[{
+     "bottom", ".", "\[IndentingNewLine]", "\[IndentingNewLine]", "For"}], 
+     " ", "information", " ", "on", " ", "braid", " ", "notation", " ", "and",
+      " ", "extended", " ", "Gauss", " ", "notation"}], ",", " ", 
+    RowBox[{"see", " ", "KnotInfo", " ", "or", " ", "KnotAtlas"}]}], 
+   "\[IndentingNewLine]", "*)"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", "  ", 
+   RowBox[{
+   "FuseStrings", " ", "takes", " ", "two", " ", "strands", " ", "and", " ", 
+    "fuses", " ", "them", " ", "together"}], " ", "*)"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"FuseStrings", "[", 
+     RowBox[{
+     "localcrossdata_", ",", "threeedgedata_", ",", "databee_", ",", 
+      "datahive_", ",", "stringend_", ",", "stringcrosses_"}], "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "count", ",", "bit", ",", "counttwo", ",", "localcrossdatatwo", ",", 
+        "threeedgedatathree", ",", "keys", ",", "stringstart", ",", "sliced", 
+        ",", "slicelist", ",", "stringcrosstwo"}], "}"}], ",", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"localcrossdatatwo", "=", "localcrossdata"}], ";", 
+        RowBox[{"stringcrosstwo", " ", "=", " ", "stringcrosses"}], ";", 
+        RowBox[{"stringstart", " ", "=", " ", "stringend"}], ";", " ", 
+        RowBox[{"threeedgedatathree", " ", "=", " ", "threeedgedata"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"bit", " ", "=", " ", "0"}], ";", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"datahive", " ", "\[NotEqual]", " ", "databee"}], ",", " ", 
+          RowBox[{
+           RowBox[{"keys", " ", "=", " ", 
+            RowBox[{"Keys", "[", "stringend", "]"}]}], ";", " ", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Count", "[", 
+               RowBox[{"keys", ",", "datahive"}], "]"}], " ", "\[Equal]", " ",
+               "0"}], ",", " ", 
+             RowBox[{
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringcrosstwo", ",", " ", 
+                RowBox[{"datahive", " ", "\[Rule]", " ", 
+                 RowBox[{"{", "}"}]}]}], "]"}], ";", " ", 
+              RowBox[{"bit", " ", "=", " ", "1"}], ";"}]}], "]"}], ";", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+             RowBox[{"count", " ", "\[LessEqual]", " ", 
+              RowBox[{"Length", "[", "localcrossdatatwo", "]"}]}], ",", 
+             RowBox[{"count", "++"}], ",", " ", 
+             RowBox[{
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                RowBox[{"counttwo", " ", "\[LessEqual]", " ", "3"}], ",", 
+                RowBox[{"counttwo", "++"}], ",", 
+                RowBox[{
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}], "\[Equal]", 
+                    " ", "databee"}], ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"datahive", "*", 
+                    RowBox[{"Sign", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}]}]}], ";"}]}],
+                   "]"}], ";"}]}], "]"}], ";"}]}], "]"}], ";", " ", 
+           "\[IndentingNewLine]", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+             RowBox[{"count", " ", "\[LessEqual]", " ", 
+              RowBox[{"Length", "[", "keys", "]"}]}], ",", 
+             RowBox[{"count", "++"}], ",", 
+             RowBox[{
+              RowBox[{"slicelist", " ", "=", " ", 
+               RowBox[{"Lookup", "[", 
+                RowBox[{"stringstart", ",", 
+                 RowBox[{"keys", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}]}], "]"}]}], ";", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"sliced", " ", "=", " ", "1"}], ",", " ", 
+                RowBox[{"sliced", " ", "\[LessEqual]", " ", "2"}], ",", " ", 
+                RowBox[{"sliced", "++"}], ",", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"For", "[", 
+                  RowBox[{
+                   RowBox[{"counttwo", "=", "1"}], ",", " ", 
+                   RowBox[{"counttwo", " ", "\[LessEqual]", " ", 
+                    RowBox[{"Length", "[", 
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "]"}]}], ",", 
+                   RowBox[{"counttwo", "++"}], ",", 
+                   RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}], "\[Equal]", 
+                    " ", "databee"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"datahive", "*", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "/", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}]}]}]}], 
+                    ";"}]}], "]"}], ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringstart", ",", " ", 
+                RowBox[{
+                 RowBox[{"keys", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}], " ", "\[Rule]", " ", 
+                 "slicelist"}]}], "]"}], ";"}]}], "]"}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+             RowBox[{"count", " ", "\[LessEqual]", " ", 
+              RowBox[{"Length", "[", "threeedgedatathree", "]"}]}], ",", 
+             RowBox[{"count", "++"}], ",", " ", 
+             RowBox[{
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                RowBox[{"counttwo", " ", "\[LessEqual]", " ", "3"}], ",", 
+                RowBox[{"counttwo", "++"}], ",", 
+                RowBox[{
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}], "\[Equal]", 
+                    " ", "databee"}], ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"datahive", "*", 
+                    RowBox[{"Sign", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}]}]}], ";"}]}],
+                   "]"}], ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{"keys", " ", "=", " ", 
+            RowBox[{"Keys", "[", "stringcrosstwo", "]"}]}], ";", " ", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+             RowBox[{"count", " ", "\[LessEqual]", " ", 
+              RowBox[{"Length", "[", "keys", "]"}]}], ",", 
+             RowBox[{"count", "++"}], ",", " ", 
+             RowBox[{
+              RowBox[{"slicelist", " ", "=", " ", 
+               RowBox[{"Lookup", "[", 
+                RowBox[{"stringcrosstwo", ",", 
+                 RowBox[{"keys", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}]}], "]"}]}], ";", " ", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"sliced", " ", "=", " ", "1"}], ",", " ", 
+                RowBox[{"sliced", " ", "\[LessEqual]", " ", 
+                 RowBox[{"Length", "[", "slicelist", "]"}]}], ",", 
+                RowBox[{"sliced", "++"}], ",", " ", 
+                RowBox[{
+                 RowBox[{"For", "[", 
+                  RowBox[{
+                   RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                   RowBox[{"counttwo", " ", "\[LessEqual]", " ", 
+                    RowBox[{"Length", "[", 
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "]"}]}], ",", 
+                   RowBox[{"counttwo", "++"}], ",", 
+                   RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], " ", "\[Equal]", 
+                    " ", "databee"}], ",", " ", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], " ", "=", " ", 
+                    "datahive"}], ";"}]}], "]"}], ";"}]}], "]"}], ";"}]}], 
+               "]"}], ";", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringcrosstwo", ",", 
+                RowBox[{
+                 RowBox[{"keys", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}], " ", "\[Rule]", " ", 
+                 "slicelist"}]}], "]"}], ";"}]}], "]"}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{"AssociateTo", "[", 
+            RowBox[{"stringcrosstwo", ",", 
+             RowBox[{"datahive", " ", "\[Rule]", " ", 
+              RowBox[{"Join", "[", 
+               RowBox[{
+                RowBox[{"Lookup", "[", 
+                 RowBox[{"stringcrosstwo", ",", "databee"}], "]"}], ",", 
+                RowBox[{"Lookup", "[", 
+                 RowBox[{"stringcrosstwo", ",", "datahive"}], "]"}]}], 
+               "]"}]}]}], "]"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"bit", " ", "\[Equal]", " ", "1"}], ",", " ", 
+          RowBox[{
+           RowBox[{"AssociateTo", "[", 
+            RowBox[{"stringstart", ",", " ", 
+             RowBox[{"datahive", " ", "\[Rule]", " ", 
+              RowBox[{"Lookup", "[", 
+               RowBox[{"stringstart", ",", "databee"}], "]"}]}]}], "]"}], 
+           ";"}], ",", 
+          RowBox[{
+           RowBox[{"AssociateTo", "[", 
+            RowBox[{"stringstart", ",", 
+             RowBox[{"datahive", " ", "\[Rule]", " ", 
+              RowBox[{"Join", "[", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Lookup", "[", 
+                   RowBox[{"stringstart", ",", "databee"}], "]"}], "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Lookup", "[", 
+                   RowBox[{"stringstart", ",", "datahive"}], "]"}], "[", 
+                  RowBox[{"[", "2", "]"}], "]"}], "}"}]}], "]"}]}]}], "]"}], 
+           ";"}]}], "]"}], ";", "\[IndentingNewLine]", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"datahive", " ", "\[NotEqual]", " ", "databee"}], ",", 
+          RowBox[{
+           RowBox[{"Return", "[", 
+            RowBox[{"{", 
+             RowBox[{"localcrossdatatwo", ",", "threeedgedatathree", ",", 
+              RowBox[{"KeyDrop", "[", 
+               RowBox[{"stringstart", ",", 
+                RowBox[{"{", "databee", "}"}]}], "]"}], ",", 
+              RowBox[{"KeyDrop", "[", 
+               RowBox[{"stringcrosstwo", ",", 
+                RowBox[{"{", "databee", "}"}]}], "]"}]}], "}"}], "]"}], ";"}],
+           ",", 
+          RowBox[{
+           RowBox[{"Return", "[", 
+            RowBox[{"{", 
+             RowBox[{
+             "localcrossdatatwo", ",", "threeedgedatathree", ",", 
+              "stringstart", ",", "stringcrosstwo"}], "}"}], "]"}], ";"}]}], 
+         "]"}], ";"}], ")"}]}], "]"}]}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "MergeStrings", " ", "deals", " ", "with", " ", "obvious", " ", 
+      "Reidemeister", " ", "I", " ", "moves", " ", "to", " ", "speed", " ", 
+      "up", " ", 
+      RowBox[{"computation", ".", "\[IndentingNewLine]", "\t", "Naive"}], " ",
+       "computation", " ", "splits", " ", "a", " ", "crossing", " ", "into", 
+      " ", "two", " ", "states"}], ",", " ", 
+     RowBox[{
+     "meaning", " ", "each", " ", "extra", " ", "crossing", " ", "at", " ", 
+      "least", " ", "doubles", " ", "computation", " ", 
+      RowBox[{"time", ".", "\[IndentingNewLine]", "\t", "MergeStrings"}], " ",
+       "avoids", " ", "this", " ", "when", " ", 
+      RowBox[{"it", "'"}], "s", " ", "easy", " ", "to", " ", "do", " ", 
+      RowBox[{"so", "."}]}]}], "\[IndentingNewLine]", "*)"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"MergeStrings", "[", 
+     RowBox[{
+     "localcrossdata_", ",", "threeedgedata_", ",", "cutstrings_", ",", 
+      "stringend_", ",", "stringcrosses_"}], "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "localcrossdatatwo", ",", "threeedgedatathree", ",", "count", ",", 
+        "stringstart", ",", "fusedstrings", ",", "librarysize", ",", 
+        "stringcrosstwo"}], "}"}], ",", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"threeedgedatathree", " ", "=", " ", "threeedgedata"}], ";", 
+        RowBox[{"librarysize", " ", "=", " ", "0"}], ";", 
+        RowBox[{"localcrossdatatwo", " ", "=", " ", "localcrossdata"}], ";", 
+        RowBox[{"stringcrosstwo", " ", "=", " ", "stringcrosses"}], ";", " ", 
+        RowBox[{"stringstart", " ", "=", " ", "stringend"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"count", " ", "=", " ", 
+           RowBox[{"Length", "[", "localcrossdata", "]"}]}], ",", " ", 
+          RowBox[{"count", "\[GreaterEqual]", " ", "1"}], ",", 
+          RowBox[{"count", "--"}], ",", 
+          RowBox[{
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{"Norm", "[", 
+                RowBox[{
+                 RowBox[{"localcrossdatatwo", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}], " ", "\[Equal]", " ", 
+               "cutstrings"}], " ", "&&", " ", 
+              RowBox[{
+               RowBox[{"Norm", "[", 
+                RowBox[{
+                 RowBox[{"localcrossdatatwo", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}], "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "]"}], "\[NotEqual]", " ", 
+               "cutstrings"}], " ", "&&", " ", 
+              RowBox[{
+               RowBox[{"Norm", "[", 
+                RowBox[{
+                 RowBox[{"localcrossdatatwo", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}], "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], "]"}], "\[NotEqual]", " ", 
+               "cutstrings"}]}], ",", 
+             RowBox[{
+              RowBox[{"fusedstrings", " ", "=", " ", 
+               RowBox[{"FuseStrings", "[", 
+                RowBox[{"localcrossdatatwo", ",", "threeedgedatathree", ",", 
+                 RowBox[{"Norm", "[", 
+                  RowBox[{
+                   RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "]"}], ",", 
+                 RowBox[{"Norm", "[", 
+                  RowBox[{
+                   RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", "stringstart", 
+                 ",", "stringcrosstwo"}], "]"}]}], ";", " ", 
+              RowBox[{"threeedgedatathree", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "2", "]"}], "]"}]}], ";", " ", 
+              RowBox[{"librarysize", " ", "=", " ", 
+               RowBox[{"librarysize", " ", "+", " ", "1"}]}], ";", 
+              RowBox[{"stringcrosstwo", " ", "=", " ", 
+               RowBox[{"KeyDrop", "[", 
+                RowBox[{
+                 RowBox[{"fusedstrings", "[", 
+                  RowBox[{"[", "4", "]"}], "]"}], ",", 
+                 RowBox[{"{", "cutstrings", "}"}]}], "]"}]}], ";", " ", 
+              RowBox[{"stringstart", " ", "=", " ", 
+               RowBox[{"KeyDrop", "[", 
+                RowBox[{
+                 RowBox[{"fusedstrings", "[", 
+                  RowBox[{"[", "3", "]"}], "]"}], ",", 
+                 RowBox[{"{", "cutstrings", "}"}]}], "]"}]}], ";", 
+              RowBox[{"localcrossdatatwo", " ", "=", " ", 
+               RowBox[{"Drop", "[", 
+                RowBox[{
+                 RowBox[{"fusedstrings", "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], ",", 
+                 RowBox[{"{", "count", "}"}]}], "]"}]}], ";", " ", 
+              RowBox[{"threeedgedatathree", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "2", "]"}], "]"}]}], ";"}]}], "]"}], ";"}]}], 
+         "]"}], ";", 
+        RowBox[{"{", 
+         RowBox[{
+         "localcrossdatatwo", ",", "threeedgedatathree", ",", "librarysize", 
+          ",", "stringstart", ",", "stringcrosstwo"}], "}"}]}], ")"}]}], 
+     "]"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"Check", " ", "a", " ", "graph", " ", "for", " ", "bigons"}], 
+     ",", " ", 
+     RowBox[{
+     "and", " ", "return", " ", "relevant", " ", "data", " ", "if", " ", 
+      "one", " ", 
+      RowBox[{"exists", "."}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"BigonCheck", "[", 
+     RowBox[{"stringstart_", ",", "threeedgedata_"}], "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "deadkeys", ",", "threeedgedatathree", ",", "stringcrosstwo", ",", 
+        "stringcrossthree", ",", "strungbit", ",", "strung", ",", 
+        "otherdeadkeys", ",", "count", ",", "counttwo", ",", "electrike", ",",
+         "mareep", ",", "sliced", ",", "countthreegon", ",", "minun", ",", 
+        "plusle", ",", "counter", ",", "bit", ",", "threecheck"}], "}"}], ",", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"otherdeadkeys", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{"0", ",", "0"}], "}"}]}], ";", 
+        RowBox[{"deadkeys", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{"0", ",", "0"}], "}"}]}], ";", 
+        RowBox[{"countthreegon", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"2", ",", "3"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "3"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "2"}], "}"}]}], "}"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+          RowBox[{"count", " ", "\[LessEqual]", " ", 
+           RowBox[{"Length", "[", "threeedgedata", "]"}]}], ",", 
+          RowBox[{"count", "++"}], ",", " ", 
+          RowBox[{
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"sliced", " ", "=", " ", "1"}], ",", " ", 
+             RowBox[{"sliced", " ", "\[LessEqual]", " ", "3"}], ",", " ", 
+             RowBox[{"sliced", "++"}], ",", " ", "\[IndentingNewLine]", 
+             "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"minun", " ", "=", " ", 
+               RowBox[{"Norm", "[", 
+                RowBox[{
+                 RowBox[{"threeedgedata", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}], "[", 
+                 RowBox[{"[", 
+                  RowBox[{
+                   RowBox[{"countthreegon", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                   RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "]"}]}], ";",
+               "\[IndentingNewLine]", 
+              RowBox[{"plusle", " ", "=", " ", 
+               RowBox[{"Norm", "[", 
+                RowBox[{
+                 RowBox[{"threeedgedata", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}], "[", 
+                 RowBox[{"[", 
+                  RowBox[{
+                   RowBox[{"countthreegon", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], "]"}]}], ";",
+               "\[IndentingNewLine]", 
+              RowBox[{"mareep", " ", "=", " ", 
+               RowBox[{"Sign", "[", 
+                RowBox[{
+                 RowBox[{"threeedgedata", "[", 
+                  RowBox[{"[", "count", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}]}], ";", 
+              "\[IndentingNewLine]", "\[IndentingNewLine]", 
+              RowBox[{"stringcrosstwo", " ", "=", 
+               RowBox[{
+                RowBox[{"Lookup", "[", 
+                 RowBox[{"stringstart", ",", "minun"}], "]"}], "[", 
+                RowBox[{"[", " ", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{"mareep", "+", "3"}], ")"}], "/", "2"}], "]"}], 
+                "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"stringcrossthree", " ", "=", " ", 
+               RowBox[{
+                RowBox[{"Lookup", "[", 
+                 RowBox[{"stringstart", ",", "plusle"}], "]"}], "[", 
+                RowBox[{"[", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{"mareep", "+", "3"}], ")"}], "/", "2"}], "]"}], 
+                "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"ListSame", "[", 
+                 RowBox[{
+                  RowBox[{"Join", "[", 
+                   RowBox[{
+                    RowBox[{"{", "minun", "}"}], ",", "stringcrosstwo"}], 
+                   "]"}], ",", 
+                  RowBox[{"Join", "[", 
+                   RowBox[{
+                    RowBox[{"{", "plusle", "}"}], ",", "stringcrossthree"}], 
+                   "]"}]}], "]"}], ",", " ", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"otherdeadkeys", "[", 
+                   RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", "count"}], 
+                 ";", 
+                 RowBox[{"electrike", " ", "=", " ", 
+                  RowBox[{"{", 
+                   RowBox[{
+                    RowBox[{"Min", "[", 
+                    RowBox[{"{", 
+                    RowBox[{"minun", ",", "plusle"}], "}"}], "]"}], ",", 
+                    RowBox[{"Max", "[", 
+                    RowBox[{"{", 
+                    RowBox[{"minun", ",", "plusle"}], "}"}], "]"}]}], "}"}]}],
+                  ";", 
+                 RowBox[{"bit", " ", "=", " ", "1"}], ";", 
+                 "\[IndentingNewLine]", 
+                 RowBox[{
+                  RowBox[{"deadkeys", "[", 
+                   RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"mareep", "+", "3"}], ")"}], "/", "2"}], "]"}], 
+                   "]"}], " ", "=", " ", 
+                  RowBox[{"Norm", "[", 
+                   RowBox[{
+                    RowBox[{"threeedgedata", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "]"}]}], ";", 
+                 "\[IndentingNewLine]", 
+                 RowBox[{"For", "[", 
+                  RowBox[{
+                   RowBox[{"counter", " ", "=", " ", "1"}], ",", " ", 
+                   RowBox[{"counter", " ", "\[LessEqual]", 
+                    RowBox[{"Length", "[", "threeedgedata", "]"}]}], ",", 
+                   RowBox[{"counter", "++"}], ",", " ", 
+                   RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Count", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedata", "[", 
+                    RowBox[{"[", "counter", "]"}], "]"}], ",", 
+                    RowBox[{"-", 
+                    RowBox[{
+                    RowBox[{"threeedgedata", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"countthreegon", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}]}]}], " ", 
+                    "]"}], "\[Equal]", " ", "1"}], ",", " ", 
+                    RowBox[{
+                    RowBox[{"bit", " ", "=", " ", "1"}], ";", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"otherdeadkeys", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", 
+                    "counter"}], ";", 
+                    RowBox[{"For", "[", 
+                    RowBox[{
+                    RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                    RowBox[{"counttwo", " ", "<=", " ", "3"}], ",", " ", 
+                    RowBox[{"counttwo", "++"}], ",", " ", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedata", "[", 
+                    RowBox[{"[", "counter", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}], " ", "==", 
+                    " ", "minun"}], " ", "||", 
+                    RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedata", "[", 
+                    RowBox[{"[", "counter", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}], " ", "==", 
+                    " ", "plusle"}]}], ",", " ", 
+                    RowBox[{
+                    RowBox[{"strungbit", " ", "=", " ", "1"}], ";"}], ",", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"deadkeys", "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"3", "-", "mareep"}], ")"}], "/", "2"}], " ", 
+                    "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedata", "[", 
+                    RowBox[{"[", "counter", "]"}], "]"}], "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}]}], ";"}]}], 
+                    "]"}], ";"}]}], "]"}], ";"}]}], "\[IndentingNewLine]", 
+                    "]"}], ";"}]}], "]"}], ";", 
+                 RowBox[{"threecheck", " ", "=", " ", 
+                  RowBox[{"Join", "[", 
+                   RowBox[{
+                    RowBox[{"{", "otherdeadkeys", "}"}], ",", 
+                    RowBox[{"{", "deadkeys", "}"}], ",", 
+                    RowBox[{"{", "electrike", "}"}]}], "]"}]}], ";", 
+                 RowBox[{"Return", "[", "threecheck", "]"}], ";"}]}], "]"}], 
+              ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+        RowBox[{"Return", "[", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"0", ",", "0"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "0"}], "}"}]}], "}"}], "]"}], ";"}], ")"}]}], 
+     "]"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "Check", " ", "the", " ", "graph", " ", "for", " ", "quadragons"}], ",", 
+     " ", 
+     RowBox[{
+     "and", " ", "return", " ", "relevant", " ", "data", " ", "if", " ", 
+      "one", " ", 
+      RowBox[{"exists", ".", " ", "Frohman"}], " ", 
+      RowBox[{"(", "2017", ")"}], " ", "showed", " ", "that", " ", "a", " ", 
+      "trivalent", " ", "graph", " ", "must", " ", "have", " ", "either", " ",
+       "a", " ", "bigon", " ", "or", " ", 
+      RowBox[{"quadragon", "."}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"QuadCheck", "[", 
+     RowBox[{"stringend_", ",", "threeedgedata_"}], "]"}], ":=", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "stringstart", ",", "keys", ",", "mareep", ",", "klink", ",", "klang", 
+        ",", "ledian", ",", "klinklang", ",", "threeedgedatathree", ",", 
+        "minun", ",", "plusle", ",", "stringpath", ",", "count", ",", 
+        "counttwo", ",", "countthreegon", ",", "sliced", ",", "countfour", 
+        ",", "knotstring", ",", "threecheck", ",", "bit", ",", 
+        "otherdeadkeys"}], "}"}], ",", 
+      RowBox[{"(", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"threeedgedatathree", " ", "=", " ", 
+         RowBox[{"threeedgedata", "*", 
+          RowBox[{"Sign", "[", "threeedgedata", "]"}]}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"threecheck", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "0", ",", "0", ",", "0"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"0", ",", "0", ",", "0", ",", "0"}], "}"}]}], "}"}]}], 
+        ";", " ", 
+        RowBox[{"countthreegon", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"2", ",", "3"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "3"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "2"}], "}"}]}], "}"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+          RowBox[{"count", " ", "<=", " ", 
+           RowBox[{"Length", "[", "threeedgedata", "]"}]}], ",", 
+          RowBox[{"count", "++"}], ",", 
+          RowBox[{
+           RowBox[{"mareep", " ", "=", " ", 
+            RowBox[{"Sign", "[", 
+             RowBox[{
+              RowBox[{"threeedgedata", "[", 
+               RowBox[{"[", "count", "]"}], "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}]}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"sliced", " ", "=", " ", "1"}], ",", 
+             RowBox[{"sliced", " ", "<=", " ", "3"}], ",", 
+             RowBox[{"sliced", "++"}], ",", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"minun", " ", "=", " ", 
+               RowBox[{
+                RowBox[{"Lookup", "[", 
+                 RowBox[{"stringend", ",", 
+                  RowBox[{
+                   RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                   RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"countthreegon", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}]}], "]"}], 
+                "[", 
+                RowBox[{"[", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{"mareep", "+", "3"}], ")"}], "/", "2"}], "]"}], 
+                "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"plusle", " ", "=", "  ", 
+               RowBox[{
+                RowBox[{"Lookup", "[", 
+                 RowBox[{"stringend", ",", 
+                  RowBox[{
+                   RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                   RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"countthreegon", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}]}], "]"}], 
+                "[", 
+                RowBox[{"[", 
+                 RowBox[{
+                  RowBox[{"(", 
+                   RowBox[{"mareep", "+", "3"}], ")"}], "/", "2"}], "]"}], 
+                "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"klink", " ", "=", " ", "1"}], ",", " ", 
+                RowBox[{"klink", " ", "<=", " ", "2"}], ",", " ", 
+                RowBox[{"klink", "++"}], ",", 
+                RowBox[{
+                 RowBox[{"For", "[", 
+                  RowBox[{
+                   RowBox[{"klang", " ", "=", " ", "1"}], ",", " ", 
+                   RowBox[{"klang", " ", "<=", " ", "2"}], ",", " ", 
+                   RowBox[{"klang", "++"}], ",", "\[IndentingNewLine]", 
+                   RowBox[{
+                    RowBox[{"stringpath", " ", "=", " ", 
+                    RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringend", ",", 
+                    RowBox[{"minun", "[", 
+                    RowBox[{"[", "klink", "]"}], "]"}]}], "]"}], "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"3", "-", "mareep"}], ")"}], "/", "2"}], "]"}], 
+                    "]"}]}], ";", "\[IndentingNewLine]", 
+                    RowBox[{"ledian", " ", "=", " ", 
+                    RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringend", ",", 
+                    RowBox[{"plusle", "[", 
+                    RowBox[{"[", "klang", "]"}], "]"}]}], "]"}], "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"3", "-", "mareep"}], ")"}], "/", "2"}], "]"}], 
+                    "]"}]}], ";", "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"ListSame", "[", 
+                    RowBox[{
+                    RowBox[{"Join", "[", 
+                    RowBox[{"stringpath", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"minun", "[", 
+                    RowBox[{"[", "klink", "]"}], "]"}], "}"}]}], "]"}], ",", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"ledian", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"plusle", "[", 
+                    RowBox[{"[", "klang", "]"}], "]"}], "}"}]}], "]"}]}], 
+                    "]"}], ",", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"minun", "[", 
+                    RowBox[{"[", "klink", "]"}], "]"}]}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "[", 
+                    RowBox[{"[", "4", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"plusle", "[", 
+                    RowBox[{"[", "klang", "]"}], "]"}]}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"countthreegon", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}]}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"countthreegon", "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}]}], ";", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{"mareep", " ", "==", " ", 
+                    RowBox[{"-", "1"}]}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}]}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"minun", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"3", "-", "klink"}], "]"}], "]"}]}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"plusle", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"3", "-", "klang"}], "]"}], "]"}]}], ";", 
+                    RowBox[{"For", "[", 
+                    RowBox[{
+                    RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                    RowBox[{"counttwo", "<=", " ", "2"}], ",", " ", 
+                    RowBox[{"counttwo", "++"}], ",", " ", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"stringpath", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], " ", "!=", " ", 
+                    RowBox[{"plusle", "[", 
+                    RowBox[{"[", "klang", "]"}], "]"}]}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "4", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"stringpath", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}]}], ";"}]}], "]"}], 
+                    ";"}]}], "]"}], ";"}], ",", "\[IndentingNewLine]", 
+                    "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "sliced", "]"}], "]"}]}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"minun", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"3", "-", "klink"}], "]"}], "]"}]}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "4", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"plusle", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"3", "-", "klang"}], "]"}], "]"}]}], ";", 
+                    RowBox[{"For", "[", 
+                    RowBox[{
+                    RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                    RowBox[{"counttwo", "<=", " ", "2"}], ",", " ", 
+                    RowBox[{"counttwo", "++"}], ",", " ", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"stringpath", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], " ", "!=", " ", 
+                    RowBox[{"plusle", "[", 
+                    RowBox[{"[", "klang", "]"}], "]"}]}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"stringpath", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}]}], ";"}]}], "]"}], 
+                    ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+                    "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", "count"}], 
+                    ";", "\[IndentingNewLine]", 
+                    RowBox[{"For", "[", 
+                    RowBox[{
+                    RowBox[{"counttwo", " ", "=", " ", "1"}], " ", ",", 
+                    RowBox[{"counttwo", "<=", " ", 
+                    RowBox[{"Length", "[", "threeedgedata", "]"}]}], ",", 
+                    RowBox[{"counttwo", "++"}], ",", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Count", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedata", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], ",", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"-", "mareep"}], ")"}], "*", 
+                    RowBox[{"minun", "[", 
+                    RowBox[{"[", "klink", "]"}], "]"}]}]}], "]"}], "==", " ", 
+                    "1"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", 
+                    "counttwo"}], ";"}]}], "]"}], ";", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Count", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedata", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], ",", 
+                    RowBox[{
+                    RowBox[{"(", 
+                    RowBox[{"-", "mareep"}], ")"}], "*", 
+                    RowBox[{"plusle", "[", 
+                    RowBox[{"[", "klang", "]"}], "]"}]}]}], "]"}], "==", " ", 
+                    "1"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], " ", "=", " ", 
+                    "counttwo"}], ";"}]}], "]"}], ";", 
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Count", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedata", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], ",", 
+                    RowBox[{
+                    RowBox[{"(", "mareep", ")"}], "*", 
+                    RowBox[{"plusle", "[", 
+                    RowBox[{"[", "klang", "]"}], "]"}]}]}], "]"}], "==", " ", 
+                    "1"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                    RowBox[{"[", "4", "]"}], "]"}], " ", "=", " ", 
+                    "counttwo"}], ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+                    RowBox[{"Return", "[", "threecheck", "]"}], ";"}]}], 
+                    "]"}], ";"}]}], "]"}], ";"}]}], "]"}], ";"}]}], "]"}], 
+           ";"}]}], "]"}], ";", 
+        RowBox[{"Return", "[", "threecheck", "]"}], ";"}], 
+       "\[IndentingNewLine]", "\[IndentingNewLine]", ")"}]}], "]"}]}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Check", " ", "if", " ", "two", " ", "lists", " ", "are", " ", "the", " ",
+      "same"}], " ", "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"ListSame", "[", 
+     RowBox[{"listone_", ",", "listtwo_"}], "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", "count", "}"}], ",", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Length", "[", "listone", "]"}], " ", "\[NotEqual]", " ", 
+           RowBox[{"Length", "[", "listtwo", "]"}]}], ",", 
+          RowBox[{
+           RowBox[{"Return", "[", "False", "]"}], ";"}]}], "]"}], ";", " ", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+          RowBox[{"count", " ", "\[LessEqual]", " ", 
+           RowBox[{"Length", "[", "listone", "]"}]}], ",", 
+          RowBox[{"count", "++"}], ",", 
+          RowBox[{
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Count", "[", 
+               RowBox[{"listone", ",", 
+                RowBox[{"listone", "[", 
+                 RowBox[{"[", "count", "]"}], "]"}]}], "]"}], " ", 
+              "\[NotEqual]", " ", 
+              RowBox[{"Count", "[", 
+               RowBox[{"listtwo", ",", 
+                RowBox[{"listone", "[", 
+                 RowBox[{"[", "count", "]"}], "]"}]}], "]"}]}], ",", 
+             RowBox[{
+              RowBox[{"Return", "[", "False", "]"}], ";"}]}], "]"}], ";"}]}], 
+         "]"}], ";", 
+        RowBox[{"Return", "[", "True", "]"}], ";"}], ")"}]}], "]"}]}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Take", " ", "an", " ", "entry", " ", "out", " ", "of", " ", "a", " ", 
+     "list"}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"DropEntry", "[", 
+     RowBox[{"stringcrosstwo_", ",", "tobegone_"}], "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"count", ",", "keys", ",", "stringcrosses", ",", "entry"}], 
+       "}"}], ",", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"entry", " ", "=", " ", 
+         RowBox[{"tobegone", "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], ";", " ", 
+        RowBox[{"stringcrosses", " ", "=", " ", "stringcrosstwo"}], ";", " ", 
+        RowBox[{"keys", " ", "=", " ", 
+         RowBox[{"Lookup", "[", 
+          RowBox[{"stringcrosstwo", ",", "entry"}], "]"}]}], ";", " ", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+          RowBox[{"count", " ", "\[LessEqual]", " ", 
+           RowBox[{"Length", "[", "keys", "]"}]}], ",", 
+          RowBox[{"count", "++"}], ",", 
+          RowBox[{
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"keys", "[", 
+               RowBox[{"[", "count", "]"}], "]"}], "\[Equal]", " ", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"tobegone", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], ",", 
+                RowBox[{"tobegone", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}]}], "}"}]}], ",", 
+             RowBox[{
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringcrosses", ",", " ", 
+                RowBox[{"entry", " ", "\[Rule]", " ", 
+                 RowBox[{"Drop", "[", 
+                  RowBox[{"keys", ",", 
+                   RowBox[{"{", "count", "}"}]}], "]"}]}]}], "]"}], ";", 
+              RowBox[{"Return", "[", "stringcrosses", "]"}], ";"}]}], "]"}], 
+           ";"}]}], "]"}], ";"}], ")"}]}], "]"}]}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Take", " ", "a", " ", "crossing", " ", "and", " ", "separate", " ", 
+     "the", " ", "strands", " ", "so", " ", "that", " ", "they", " ", "can", 
+     " ", "later", " ", "be", " ", "resolved", " ", "in", " ", "either", " ", 
+     "way", " ", "according", " ", "to", " ", "the", " ", "skein", " ", 
+     "relation"}], " ", "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"SliceStrings", "[", 
+     RowBox[{
+     "localcrossdata_", ",", "threeedgedata_", ",", "stringend_", ",", 
+      "stringcrosses_", ",", "enddata_", ",", "datahive_", ",", "databee_"}], 
+     "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "localcrossdatatwo", ",", "countthreegon", ",", "countthree", ",", 
+        "pora", ",", "threeedgedatathree", ",", "hoopa", ",", "keys", ",", 
+        "countfourcool", ",", "sliced", ",", "numslices", ",", "slicelist", 
+        ",", "stringstart", ",", "countfour", ",", "bit", ",", "scizor", ",", 
+        "stringcrosstwo", ",", "count", ",", "entry", ",", "counttwo", ",", 
+        "countfourcruel", ",", "cutstrings"}], "}"}], ",", 
+      RowBox[{"(", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"keys", " ", "=", " ", 
+         RowBox[{"Keys", "[", "stringend", "]"}]}], ";", " ", 
+        RowBox[{"stringcrosstwo", " ", "=", " ", "stringcrosses"}], ";", 
+        RowBox[{"hoopa", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"Max", "[", "keys", "]"}], "+", "2"}]}], ";", " ", 
+        RowBox[{"stringstart", " ", "=", " ", "stringend"}], ";", 
+        RowBox[{"localcrossdatatwo", " ", "=", " ", "localcrossdata"}], ";", 
+        " ", 
+        RowBox[{"threeedgedatathree", " ", "=", " ", "threeedgedata"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"slicelist", " ", "=", " ", 
+         RowBox[{"Lookup", "[", 
+          RowBox[{"stringcrosses", ",", "datahive"}], "]"}]}], ";", 
+        RowBox[{"countthreegon", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"{", 
+            RowBox[{"2", ",", "3"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "3"}], "}"}], ",", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "2"}], "}"}]}], "}"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"sliced", " ", "=", " ", 
+         RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"numslices", " ", "=", " ", 
+         RowBox[{"Length", "[", "slicelist", "]"}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+          RowBox[{"count", " ", "\[LessEqual]", " ", "numslices"}], ",", 
+          RowBox[{"count", "++"}], ",", 
+          RowBox[{
+           RowBox[{"entry", " ", "=", " ", 
+            RowBox[{"slicelist", "[", 
+             RowBox[{"[", "1", "]"}], "]"}]}], ";", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{"entry", " ", "\[Equal]", " ", "enddata"}], " ", ",", 
+             RowBox[{
+              RowBox[{"slicelist", " ", "=", " ", 
+               RowBox[{"Drop", "[", 
+                RowBox[{"slicelist", ",", 
+                 RowBox[{"{", "1", "}"}]}], "]"}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringcrosstwo", ",", " ", 
+                RowBox[{"datahive", " ", "\[Rule]", " ", "slicelist"}]}], 
+               "]"}], ";", " ", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringcrosstwo", ",", " ", 
+                RowBox[{"databee", " ", "\[Rule]", " ", "sliced"}]}], "]"}], 
+              ";", " ", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringstart", ",", 
+                RowBox[{
+                 RowBox[{"enddata", "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], " ", "\[Rule]", " ", 
+                 RowBox[{"Join", "[", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringstart", ",", 
+                    RowBox[{"enddata", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"{", 
+                    RowBox[{"databee", ",", "hoopa"}], "}"}], "}"}]}], 
+                  "]"}]}]}], "]"}], ";", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringstart", ",", 
+                RowBox[{
+                 RowBox[{"enddata", "[", 
+                  RowBox[{"[", "2", "]"}], "]"}], " ", "\[Rule]", " ", 
+                 RowBox[{"Join", "[", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"{", 
+                    RowBox[{"datahive", ",", "hoopa"}], "}"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringstart", ",", 
+                    RowBox[{"enddata", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "}"}]}], "]"}]}]}], "]"}],
+               ";", "\[IndentingNewLine]", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringstart", ",", 
+                RowBox[{"databee", " ", "\[Rule]", " ", 
+                 RowBox[{"Join", "[", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringend", ",", "datahive"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"enddata", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], ",", "hoopa"}], "}"}], 
+                    "}"}]}], "]"}]}]}], "]"}], ";", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringstart", ",", 
+                RowBox[{"datahive", " ", "\[Rule]", " ", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"hoopa", ",", 
+                    RowBox[{"enddata", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", 
+                   RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringend", ",", "datahive"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}]}], "]"}], ";", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringstart", ",", 
+                RowBox[{"hoopa", " ", "->", " ", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{"datahive", ",", 
+                    RowBox[{"enddata", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"databee", ",", 
+                    RowBox[{"enddata", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], "}"}]}], "}"}]}]}], 
+               "]"}], ";", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringcrosstwo", ",", 
+                RowBox[{"hoopa", " ", "->", " ", 
+                 RowBox[{"{", "}"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+              "\[IndentingNewLine]", 
+              RowBox[{"countfourcool", " ", "=", " ", 
+               RowBox[{
+                RowBox[{"Lookup", "[", 
+                 RowBox[{"stringstart", ",", "databee"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"bit", " ", "=", " ", "1"}], ";", " ", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                RowBox[{"counttwo", "<=", " ", 
+                 RowBox[{"Length", "[", "localcrossdatatwo", "]"}]}], ",", 
+                RowBox[{"counttwo", "++"}], ",", 
+                RowBox[{
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "]"}], "==", " ", 
+                    "datahive"}], ",", " ", 
+                   RowBox[{
+                    RowBox[{"bit", " ", "=", " ", "2"}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "=", 
+                    RowBox[{"databee", "*", 
+                    RowBox[{"Sign", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}]}]}], ";", 
+                    RowBox[{"AssociateTo", "[", 
+                    RowBox[{"stringstart", ",", 
+                    RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], "->", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringstart", ",", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", "databee"}], 
+                    "}"}], "}"}]}], "]"}]}]}], "]"}], ";", " ", 
+                    RowBox[{"pora", " ", "=", " ", 
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringcrosstwo", ",", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}]}], "]"}]}], ";", 
+                    " ", 
+                    RowBox[{"For", "[", 
+                    RowBox[{
+                    RowBox[{"countthree", " ", "=", " ", "1"}], ",", 
+                    RowBox[{"countthree", " ", "<=", " ", 
+                    RowBox[{"Length", "[", "pora", "]"}]}], ",", 
+                    RowBox[{"countthree", "++"}], ",", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"pora", "[", 
+                    RowBox[{"[", "countthree", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "==", " ", "datahive"}], 
+                    ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"pora", "[", 
+                    RowBox[{"[", "countthree", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "=", " ", "databee"}], 
+                    ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+                    RowBox[{"AssociateTo", "[", 
+                    RowBox[{"stringcrosstwo", ",", 
+                    RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "->", " ", 
+                    "pora"}]}], "]"}], ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{"bit", " ", "==", " ", "1"}], ",", 
+                "\[IndentingNewLine]", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"For", "[", 
+                  RowBox[{
+                   RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                   RowBox[{"counttwo", "<=", " ", 
+                    RowBox[{"Length", "[", "threeedgedatathree", "]"}]}], ",", 
+                   RowBox[{"counttwo", "++"}], ",", " ", 
+                   RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"ListSame", "[", 
+                    RowBox[{
+                    RowBox[{"Join", "[", 
+                    RowBox[{"countfourcool", ",", 
+                    RowBox[{"{", "datahive", "}"}]}], "]"}], ",", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "*", 
+                    RowBox[{"Sign", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}]}]}], "]"}], "&&", 
+                    RowBox[{
+                    RowBox[{"Sign", "[", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "==", " ", "1"}]}],
+                     ",", "\[IndentingNewLine]", 
+                    RowBox[{
+                    RowBox[{"For", "[", 
+                    RowBox[{
+                    RowBox[{"countthree", " ", "=", " ", "1"}], ",", " ", 
+                    RowBox[{"countthree", " ", "<=", " ", "3"}], ",", " ", 
+                    RowBox[{"countthree", "++"}], ",", " ", 
+                    RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "countthree", "]"}], "]"}], " ", "==", " ", 
+                    "datahive"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "countthree", "]"}], "]"}], "=", "databee"}],
+                     ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+                    RowBox[{"For", "[", 
+                    RowBox[{
+                    RowBox[{"countthree", " ", "=", " ", "1"}], ",", " ", 
+                    RowBox[{"countthree", " ", "<=", " ", "3"}], ",", 
+                    RowBox[{"countthree", "++"}], ",", 
+                    RowBox[{
+                    RowBox[{"AssociateTo", "[", 
+                    RowBox[{"stringstart", ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "countthree", "]"}], "]"}], "->", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"countthreegon", "[", 
+                    RowBox[{"[", "countthree", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], ",", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"countthreegon", "[", 
+                    RowBox[{"[", "countthree", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}]}], "}"}], 
+                    "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringstart", ",", 
+                    RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "countthree", "]"}], "]"}]}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "}"}]}], "]"}]}]}], "]"}],
+                     ";"}]}], "]"}], ";"}]}], "]"}], ";"}]}], "]"}], ";"}]}], 
+               "]"}], ";", "\[IndentingNewLine]", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                RowBox[{"counttwo", " ", "<=", " ", 
+                 RowBox[{"Length", "[", "sliced", "]"}]}], ",", " ", 
+                RowBox[{"counttwo", "++"}], ",", " ", 
+                RowBox[{
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "==", " ", 
+                    "datahive"}], ",", " ", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", 
+                    "databee"}], ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                RowBox[{"counttwo", " ", "\[LessEqual]", " ", 
+                 RowBox[{"Length", "[", "sliced", "]"}]}], ",", 
+                RowBox[{"counttwo", "++"}], ",", " ", 
+                RowBox[{
+                 RowBox[{"For", "[", 
+                  RowBox[{
+                   RowBox[{"countfour", " ", "=", " ", "1"}], ",", " ", 
+                   RowBox[{"countfour", " ", "\[LessEqual]", " ", 
+                    RowBox[{"Length", "[", "localcrossdatatwo", "]"}]}], ",", 
+                   RowBox[{"countfour", "++"}], ",", " ", 
+                   RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "countfour", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "\[Equal]", " ", 
+                    "datahive"}], " ", "&&", " ", 
+                    RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "countfour", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], " ", "\[Equal]", 
+                    " ", 
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}]}], ",", " ", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "countfour", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"databee", "*", 
+                    RowBox[{"Sign", "[", 
+                    RowBox[{
+                    RowBox[{"localcrossdatatwo", "[", 
+                    RowBox[{"[", "countfour", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}]}]}], ";"}]}], "]"}],
+                     ";"}]}], "]"}], ";", "\[IndentingNewLine]", 
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "\[Equal]", " ", 
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], ",", 
+                   RowBox[{
+                    RowBox[{"AssociateTo", "[", 
+                    RowBox[{"stringstart", ",", " ", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "\[Rule]", " ", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"databee", ",", 
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"databee", ",", 
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}], "}"}]}]}], 
+                    "]"}], ";"}], ",", 
+                   RowBox[{
+                    RowBox[{"AssociateTo", "[", 
+                    RowBox[{"stringstart", ",", " ", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "\[Rule]", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringstart", ",", 
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{"{", 
+                    RowBox[{"databee", ",", 
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}], "}"}]}], 
+                    "]"}]}]}], "]"}], ";", " ", 
+                    RowBox[{"AssociateTo", "[", 
+                    RowBox[{"stringstart", ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "\[Rule]", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"{", 
+                    RowBox[{"databee", ",", 
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], "}"}], "}"}], ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"stringstart", ",", 
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "}"}]}], "]"}]}]}], "]"}],
+                     ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"sliced", " ", "=", " ", 
+               RowBox[{
+                RowBox[{"Lookup", "[", 
+                 RowBox[{"stringstart", ",", "databee"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}]}], ";", 
+              RowBox[{"slicelist", " ", "=", " ", 
+               RowBox[{"Lookup", "[", 
+                RowBox[{"stringcrosstwo", ",", 
+                 RowBox[{"sliced", "[", 
+                  RowBox[{"[", "1", "]"}], "]"}]}], "]"}]}], ";", " ", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+                RowBox[{"counttwo", " ", "\[LessEqual]", " ", 
+                 RowBox[{"Length", "[", "slicelist", "]"}]}], ",", 
+                RowBox[{"counttwo", "++"}], ",", 
+                RowBox[{
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "\[Equal]", " ", 
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], " ", "&&", " ", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "\[Equal]", " ", 
+                    "datahive"}]}], ",", " ", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"slicelist", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"sliced", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], ",", "databee"}], "}"}]}],
+                     ";"}]}], "]"}], ";"}]}], "\[IndentingNewLine]", 
+               "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";", 
+              RowBox[{"AssociateTo", "[", 
+               RowBox[{"stringcrosstwo", ",", " ", 
+                RowBox[{
+                 RowBox[{"sliced", "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], " ", "\[Rule]", " ", 
+                 "slicelist"}]}], "]"}], ";", "\[IndentingNewLine]", 
+              RowBox[{"threeedgedatathree", " ", "=", " ", 
+               RowBox[{"Join", "[", 
+                RowBox[{"threeedgedatathree", ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"-", "databee"}], ",", 
+                    RowBox[{"-", 
+                    RowBox[{"enddata", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}]}], ",", 
+                    RowBox[{"-", "hoopa"}]}], "}"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{"datahive", ",", 
+                    RowBox[{"enddata", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], ",", "hoopa"}], "}"}]}], 
+                  "}"}]}], "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"Return", "[", 
+               RowBox[{"{", 
+                RowBox[{
+                "stringstart", ",", "stringcrosstwo", ",", 
+                 "localcrossdatatwo", ",", " ", "threeedgedatathree"}], "}"}],
+                "]"}], ";"}]}], "]"}], ";", " ", 
+           RowBox[{"sliced", " ", "=", " ", 
+            RowBox[{"Join", "[", 
+             RowBox[{"sliced", ",", 
+              RowBox[{"{", "entry", "}"}]}], "]"}]}], ";", " ", 
+           RowBox[{"slicelist", " ", "=", " ", 
+            RowBox[{"Drop", "[", 
+             RowBox[{"slicelist", ",", 
+              RowBox[{"{", "1", "}"}]}], "]"}]}], ";"}]}], "]"}], ";"}], 
+       "\[IndentingNewLine]", ")"}]}], "]"}]}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"The", " ", "primary", " ", 
+      RowBox[{"program", ".", " ", "It"}], " ", "resolves", " ", "all", " ", 
+      "crossings", " ", "first"}], ",", " ", 
+     RowBox[{
+     "then", " ", "simplifies", " ", "bigons", " ", "and", " ", 
+      "quadragons"}], ",", " ", 
+     RowBox[{"prioritizing", " ", 
+      RowBox[{"bigons", ".", " ", "This"}], " ", "runs", " ", "in", " ", 
+      "exponential", " ", "time", " ", "\[IndentingNewLine]", "due", " ", 
+      "to", " ", "the", " ", "skein", " ", "relation", " ", "creating", " ", 
+      "two", " ", "states", " ", "for", " ", "one", " ", 
+      RowBox[{"crossing", "."}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"SLthreeRaw", "[", 
+     RowBox[{
+     "localcrossdata_", ",", "threeedgedata_", ",", "librarysize_", ",", 
+      "stringend_", ",", "stringcrosses_"}], "]"}], " ", ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "stringcrosstwo", ",", "count", ",", "counttwo", ",", 
+        "localcrossdatatwo", ",", "librarysizetwo", ",", 
+        "localcrossdatathree", ",", "threeedgedatathree", ",", "threecheck", 
+        ",", "fused", ",", "keys", ",", "bisharp", ",", "otherdeadkeys", ",", 
+        "deadkeys", ",", "threeedgedatatwo", ",", "stringstart", ",", 
+        "stringcrossthree", ",", "miscellaneous", ",", "fusedstrings", ",", 
+        "onecrossing"}], "}"}], ",", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"librarysizetwo", " ", "=", " ", "librarysize"}], ";", 
+        RowBox[{"stringcrosstwo", " ", "=", " ", "stringcrosses"}], ";", " ", 
+        RowBox[{"stringcrossthree", " ", "=", " ", "stringcrosses"}], ";", 
+        RowBox[{"stringstart", " ", "=", " ", "stringend"}], ";", 
+        RowBox[{"miscellaneous", " ", "=", " ", "stringstart"}], ";", 
+        RowBox[{"localcrossdatatwo", " ", "=", " ", "localcrossdata"}], ";", 
+        " ", 
+        RowBox[{"threeedgedatatwo", " ", "=", " ", "threeedgedata"}], ";", 
+        " ", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Length", "[", "localcrossdata", "]"}], " ", "\[Equal]", 
+           " ", "0"}], ",", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Length", "[", "threeedgedata", "]"}], " ", "\[Equal]", 
+              " ", "0"}], ",", " ", 
+             RowBox[{
+              RowBox[{"Return", "[", 
+               RowBox[{"Simplify", "[", 
+                RowBox[{
+                 RowBox[{"(", 
+                  RowBox[{
+                   RowBox[{"y", "^", "6"}], "+", "1", "+", 
+                   RowBox[{"y", "^", 
+                    RowBox[{"-", "6"}]}]}], ")"}], "^", 
+                 RowBox[{"(", 
+                  RowBox[{"librarysize", " ", "-", "1"}], ")"}]}], "]"}], 
+               "]"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]", 
+           RowBox[{"threecheck", " ", "=", " ", 
+            RowBox[{"BigonCheck", "[", 
+             RowBox[{"stringend", ",", "threeedgedata"}], "]"}]}], ";", " ", 
+           "\[IndentingNewLine]", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{"threecheck", "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "!=", " ", "0"}], ",", " ", 
+             RowBox[{
+              RowBox[{"fused", " ", "=", " ", 
+               RowBox[{"FuseStrings", "[", 
+                RowBox[{"localcrossdatatwo", ",", "threeedgedata", ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], "[", 
+                  RowBox[{"[", "2", "]"}], "]"}], ",", "stringstart", ",", 
+                 "stringcrosstwo"}], "]"}]}], ";", 
+              RowBox[{"threeedgedatathree", " ", "=", " ", 
+               RowBox[{"Drop", "[", 
+                RowBox[{
+                 RowBox[{"Drop", "[", 
+                  RowBox[{
+                   RowBox[{"fused", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], ",", 
+                   RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "}"}]}], "]"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "[", 
+                   RowBox[{"[", "1", "]"}], "]"}], "}"}]}], "]"}]}], ";", " ", 
+              RowBox[{"stringstart", " ", "=", " ", 
+               RowBox[{"KeyDrop", "[", 
+                RowBox[{
+                 RowBox[{"fused", "[", 
+                  RowBox[{"[", "3", "]"}], "]"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], ",", 
+                   RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}], "]"}]}], ";", 
+              RowBox[{"stringcrosstwo", " ", "=", " ", 
+               RowBox[{"KeyDrop", "[", 
+                RowBox[{
+                 RowBox[{"fused", "[", 
+                  RowBox[{"[", "4", "]"}], "]"}], ",", 
+                 RowBox[{"{", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], ",", 
+                   RowBox[{
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}]}], "}"}]}], "]"}]}], ";", 
+              " ", 
+              RowBox[{"Return", "[", 
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"-", 
+                   RowBox[{"y", "^", "3"}]}], "-", 
+                  RowBox[{"y", "^", 
+                   RowBox[{"(", 
+                    RowBox[{"-", "3"}], ")"}]}]}], ")"}], "*", 
+                RowBox[{"SLthreeRaw", "[", 
+                 RowBox[{"localcrossdatatwo", ",", "threeedgedatathree", ",", 
+                  RowBox[{"librarysize", "-", "1", "-", 
+                   RowBox[{"CountDistinct", "[", 
+                    RowBox[{"threecheck", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}]}], ",", 
+                  "stringstart", ",", "stringcrosstwo"}], "]"}]}], "]"}], 
+              ";"}]}], "]"}], ";", "\[IndentingNewLine]", 
+           "\[IndentingNewLine]", 
+           RowBox[{"threecheck", " ", "=", " ", 
+            RowBox[{"QuadCheck", "[", 
+             RowBox[{"stringstart", ",", "threeedgedata"}], "]"}]}], ";", 
+           "\[IndentingNewLine]", "\[IndentingNewLine]", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{"threecheck", "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "[", 
+               RowBox[{"[", "1", "]"}], "]"}], " ", "!=", " ", "0"}], ",", 
+             "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"otherdeadkeys", " ", "=", " ", 
+               RowBox[{"Sort", "[", 
+                RowBox[{"threecheck", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}]}], ";", 
+              "\[IndentingNewLine]", 
+              RowBox[{"threeedgedatathree", " ", "=", " ", "threeedgedata"}], 
+              ";", " ", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+              RowBox[{"For", "[", 
+               RowBox[{
+                RowBox[{"counttwo", " ", "=", " ", "4"}], ",", " ", 
+                RowBox[{"counttwo", " ", ">=", " ", "1"}], ",", " ", 
+                RowBox[{"counttwo", "--"}], ",", " ", 
+                RowBox[{
+                 RowBox[{"threeedgedatathree", " ", "=", " ", 
+                  RowBox[{"Drop", "[", 
+                   RowBox[{"threeedgedatathree", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"otherdeadkeys", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "}"}]}], "]"}]}], 
+                 ";"}]}], "]"}], ";", 
+              RowBox[{
+              "threeedgedatatwo", " ", "=", " ", "threeedgedatathree"}], ";", 
+              " ", 
+              RowBox[{"stringcrossthree", " ", "=", " ", "stringcrosstwo"}], 
+              ";", 
+              RowBox[{"miscellaneous", " ", "=", " ", "stringstart"}], ";", 
+              " ", 
+              RowBox[{"fused", " ", "=", " ", 
+               RowBox[{"FuseStrings", "[", 
+                RowBox[{"localcrossdatatwo", ",", "threeedgedatathree", ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "[", 
+                  RowBox[{"[", "2", "]"}], "]"}], ",", "stringstart", ",", 
+                 "stringcrosstwo"}], "]"}]}], ";", 
+              RowBox[{"threeedgedatathree", " ", "=", " ", 
+               RowBox[{"fused", "[", 
+                RowBox[{"[", "2", "]"}], "]"}]}], ";", 
+              RowBox[{"stringstart", " ", "=", " ", 
+               RowBox[{"fused", "[", 
+                RowBox[{"[", "3", "]"}], "]"}]}], ";", " ", 
+              RowBox[{"stringcrosstwo", " ", "=", " ", 
+               RowBox[{"fused", "[", 
+                RowBox[{"[", "4", "]"}], "]"}]}], ";", 
+              RowBox[{"fused", " ", "=", " ", 
+               RowBox[{"FuseStrings", "[", 
+                RowBox[{"localcrossdatatwo", ",", "threeedgedatathree", ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "[", 
+                  RowBox[{"[", "4", "]"}], "]"}], ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "[", 
+                  RowBox[{"[", "3", "]"}], "]"}], ",", "stringstart", ",", 
+                 "stringcrosstwo"}], "]"}]}], ";", 
+              RowBox[{"threeedgedatathree", " ", "=", " ", 
+               RowBox[{"fused", "[", 
+                RowBox[{"[", "2", "]"}], "]"}]}], ";", 
+              RowBox[{"stringstart", " ", "=", " ", 
+               RowBox[{"KeyDrop", "[", 
+                RowBox[{
+                 RowBox[{"fused", "[", 
+                  RowBox[{"[", "3", "]"}], "]"}], ",", 
+                 RowBox[{"threecheck", "[", 
+                  RowBox[{"[", "2", "]"}], "]"}]}], "]"}]}], ";", " ", 
+              RowBox[{"stringcrosstwo", " ", "=", " ", 
+               RowBox[{"fused", "[", 
+                RowBox[{"[", "4", "]"}], "]"}]}], ";", " ", 
+              RowBox[{"fused", " ", "=", " ", 
+               RowBox[{"SLthreeRaw", "[", 
+                RowBox[{"localcrossdatatwo", ",", "threeedgedatathree", ",", 
+                 RowBox[{"librarysize", "-", "6"}], ",", "stringstart", ",", 
+                 "stringcrosstwo"}], "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"fusedstrings", " ", "=", " ", 
+               RowBox[{"FuseStrings", "[", 
+                RowBox[{"localcrossdatatwo", ",", "threeedgedatatwo", ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "[", 
+                  RowBox[{"[", "3", "]"}], "]"}], ",", "miscellaneous", ",", 
+                 "stringcrossthree"}], "]"}]}], ";", 
+              RowBox[{"threeedgedatatwo", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "2", "]"}], "]"}]}], ";", 
+              RowBox[{"miscellaneous", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "3", "]"}], "]"}]}], ";", 
+              RowBox[{"stringcrossthree", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "4", "]"}], "]"}]}], ";", " ", 
+              "\[IndentingNewLine]", 
+              RowBox[{"fusedstrings", " ", "=", " ", 
+               RowBox[{"FuseStrings", "[", 
+                RowBox[{"localcrossdatatwo", ",", "threeedgedatatwo", ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "[", 
+                  RowBox[{"[", "4", "]"}], "]"}], ",", 
+                 RowBox[{
+                  RowBox[{"threecheck", "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "[", 
+                  RowBox[{"[", "2", "]"}], "]"}], ",", "miscellaneous", ",", 
+                 "stringcrossthree"}], "]"}]}], ";", 
+              RowBox[{"threeedgedatatwo", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "2", "]"}], "]"}]}], ";", 
+              RowBox[{"miscellaneous", " ", "=", " ", 
+               RowBox[{"KeyDrop", "[", 
+                RowBox[{
+                 RowBox[{"fusedstrings", "[", 
+                  RowBox[{"[", "3", "]"}], "]"}], ",", 
+                 RowBox[{"threecheck", "[", 
+                  RowBox[{"[", "2", "]"}], "]"}]}], "]"}]}], ";", 
+              RowBox[{"stringcrossthree", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "4", "]"}], "]"}]}], ";", " ", 
+              "\[IndentingNewLine]", 
+              RowBox[{"fusedstrings", " ", "=", " ", 
+               RowBox[{"SLthreeRaw", "[", 
+                RowBox[{"localcrossdatatwo", ",", "threeedgedatatwo", ",", 
+                 RowBox[{"librarysize", "-", "6"}], ",", "miscellaneous", ",",
+                  "stringcrossthree"}], "]"}]}], ";", "\[IndentingNewLine]", 
+              RowBox[{"Return", "[", 
+               RowBox[{"fusedstrings", "+", "fused"}], "]"}], ";"}]}], 
+            "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}], ";"}]}], 
+         "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        "\[IndentingNewLine]", 
+        RowBox[{"onecrossing", " ", "=", " ", 
+         RowBox[{"localcrossdata", "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], ";", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{"onecrossing", "[", 
+             RowBox[{"[", "1", "]"}], "]"}], " ", "\[Equal]", " ", 
+            RowBox[{"onecrossing", "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], " ", "||", " ", 
+           RowBox[{
+            RowBox[{"onecrossing", "[", 
+             RowBox[{"[", "1", "]"}], "]"}], " ", "\[Equal]", " ", 
+            RowBox[{"onecrossing", "[", 
+             RowBox[{"[", "3", "]"}], "]"}]}]}], ",", "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"fused", " ", "=", " ", 
+            RowBox[{"FuseStrings", "[", 
+             RowBox[{"localcrossdata", ",", "threeedgedata", ",", 
+              RowBox[{"Norm", "[", 
+               RowBox[{"onecrossing", "[", 
+                RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+              RowBox[{"Norm", "[", 
+               RowBox[{"onecrossing", "[", 
+                RowBox[{"[", "3", "]"}], "]"}], "]"}], ",", "stringend", ",", 
+              "stringcrosstwo"}], "]"}]}], ";", "\[IndentingNewLine]", 
+           RowBox[{"localcrossdatatwo", " ", "=", " ", 
+            RowBox[{"Drop", "[", 
+             RowBox[{
+              RowBox[{"fused", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], ",", 
+              RowBox[{"{", "1", "}"}]}], "]"}]}], ";", " ", 
+           RowBox[{"threeedgedatatwo", " ", "=", " ", 
+            RowBox[{"fused", "[", 
+             RowBox[{"[", "2", "]"}], "]"}]}], ";", " ", 
+           RowBox[{"stringcrosstwo", " ", "=", " ", 
+            RowBox[{"DropEntry", "[", 
+             RowBox[{
+              RowBox[{"fused", "[", 
+               RowBox[{"[", "4", "]"}], "]"}], ",", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"fused", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}], "*", 
+               RowBox[{"Sign", "[", 
+                RowBox[{
+                 RowBox[{"fused", "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}]}]}], "]"}]}], ";", 
+           "\[IndentingNewLine]", 
+           RowBox[{"librarysizetwo", " ", "=", " ", 
+            RowBox[{"librarysizetwo", "-", "1"}]}], ";", 
+           RowBox[{"stringstart", " ", "=", " ", 
+            RowBox[{"fused", "[", 
+             RowBox[{"[", "3", "]"}], "]"}]}], ";", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"onecrossing", "[", 
+               RowBox[{"[", "2", "]"}], "]"}], "\[Equal]", " ", 
+              RowBox[{"onecrossing", "[", 
+               RowBox[{"[", "3", "]"}], "]"}]}], ",", " ", 
+             RowBox[{
+              RowBox[{"fusedstrings", " ", "=", " ", 
+               RowBox[{"MergeStrings", "[", 
+                RowBox[{"localcrossdatatwo", ",", "threeedgedatatwo", ",", 
+                 RowBox[{"Norm", "[", 
+                  RowBox[{"onecrossing", "[", 
+                   RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", "stringstart", 
+                 ",", "stringcrosstwo"}], "]"}]}], ";", " ", 
+              RowBox[{"localcrossdatatwo", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "1", "]"}], "]"}]}], ";", 
+              RowBox[{"threeedgedatatwo", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "2", "]"}], "]"}]}], ";", " ", 
+              RowBox[{"librarysizetwo", " ", "=", " ", 
+               RowBox[{"librarysizetwo", " ", "-", " ", 
+                RowBox[{"fusedstrings", "[", 
+                 RowBox[{"[", "3", "]"}], "]"}], "+", "1"}]}], ";", 
+              RowBox[{"stringstart", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "4", "]"}], "]"}]}], ";", " ", 
+              RowBox[{"stringcrosstwo", " ", "=", " ", 
+               RowBox[{"fusedstrings", "[", 
+                RowBox[{"[", "5", "]"}], "]"}]}], ";"}]}], "]"}], ";", " ", 
+           RowBox[{"Return", "[", 
+            RowBox[{"Simplify", "[", 
+             RowBox[{
+              RowBox[{"y", "^", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "8"}], "*", 
+                 RowBox[{"Sign", "[", 
+                  RowBox[{"onecrossing", "[", 
+                   RowBox[{"[", "1", "]"}], "]"}], "]"}]}], ")"}]}], "*", 
+              RowBox[{"SLthreeRaw", "[", 
+               RowBox[{
+               "localcrossdatatwo", ",", "threeedgedatatwo", ",", 
+                "librarysizetwo", ",", "stringstart", ",", "stringcrosstwo"}],
+                "]"}]}], "]"}], "]"}], ";"}]}], "]"}], ";", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"keys", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"Max", "[", 
+           RowBox[{"Keys", "[", "stringstart", "]"}], "]"}], "+", "1"}]}], 
+        ";", "\[IndentingNewLine]", 
+        RowBox[{"fused", " ", "=", " ", 
+         RowBox[{"SliceStrings", "[", 
+          RowBox[{
+          "localcrossdatatwo", ",", "threeedgedatatwo", ",", "stringstart", 
+           ",", "stringcrosstwo", ",", 
+           RowBox[{"{", 
+            RowBox[{
+             RowBox[{"Norm", "[", 
+              RowBox[{"onecrossing", "[", 
+               RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+             RowBox[{"Norm", "[", 
+              RowBox[{"onecrossing", "[", 
+               RowBox[{"[", "3", "]"}], "]"}], "]"}]}], "}"}], ",", 
+           RowBox[{"Norm", "[", 
+            RowBox[{"onecrossing", "[", 
+             RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", "keys"}], "]"}]}], 
+        ";", " ", 
+        RowBox[{"stringstart", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], ";", 
+        RowBox[{"localcrossdatatwo", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], ";", " ", 
+        RowBox[{"threeedgedatatwo", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "4", "]"}], "]"}]}], ";", 
+        RowBox[{"stringcrosstwo", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], ";", " ", 
+        RowBox[{"miscellaneous", " ", "=", " ", "stringstart"}], ";", " ", 
+        RowBox[{"stringcrossthree", " ", "=", " ", "stringcrosstwo"}], ";", 
+        " ", 
+        RowBox[{"threeedgedatathree", " ", "=", " ", "threeedgedatatwo"}], 
+        ";", 
+        RowBox[{"localcrossdatathree", " ", "=", " ", "localcrossdatatwo"}], 
+        ";", "\[IndentingNewLine]", 
+        RowBox[{"fused", " ", "=", " ", 
+         RowBox[{"FuseStrings", "[", 
+          RowBox[{
+          "localcrossdatatwo", ",", "threeedgedatatwo", ",", "keys", ",", 
+           RowBox[{"Norm", "[", 
+            RowBox[{"onecrossing", "[", 
+             RowBox[{"[", "3", "]"}], "]"}], "]"}], ",", "stringstart", ",", 
+           "stringcrosstwo"}], "]"}]}], ";", 
+        RowBox[{"localcrossdatatwo", " ", "=", 
+         RowBox[{"Drop", "[", 
+          RowBox[{
+           RowBox[{"fused", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", 
+           RowBox[{"{", "1", "}"}]}], "]"}]}], ";", 
+        RowBox[{"threeedgedatatwo", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], ";", 
+        RowBox[{"stringstart", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], ";", " ", 
+        RowBox[{"stringcrosstwo", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "4", "]"}], "]"}]}], ";", " ", "\[IndentingNewLine]", 
+        RowBox[{"fused", " ", "=", " ", 
+         RowBox[{"FuseStrings", "[", 
+          RowBox[{"localcrossdatatwo", ",", "threeedgedatatwo", ",", 
+           RowBox[{"Norm", "[", 
+            RowBox[{"onecrossing", "[", 
+             RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+           RowBox[{"Norm", "[", 
+            RowBox[{"onecrossing", "[", 
+             RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", "stringstart", ",", 
+           "stringcrosstwo"}], "]"}]}], ";", 
+        RowBox[{"localcrossdatatwo", " ", "=", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], ";", 
+        RowBox[{"threeedgedatatwo", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], ";", " ", 
+        RowBox[{"stringstart", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], ";", " ", 
+        RowBox[{"stringcrosstwo", " ", "=", " ", 
+         RowBox[{"fused", "[", 
+          RowBox[{"[", "4", "]"}], "]"}]}], ";", 
+        RowBox[{"threeedgedatatwo", " ", "=", " ", 
+         RowBox[{"Drop", "[", 
+          RowBox[{"threeedgedatatwo", ",", 
+           RowBox[{"{", 
+            RowBox[{"Length", "[", "threeedgedatatwo", "]"}], "}"}]}], 
+          "]"}]}], ";", 
+        RowBox[{"threeedgedatatwo", " ", "=", " ", 
+         RowBox[{"Drop", "[", 
+          RowBox[{"threeedgedatatwo", ",", 
+           RowBox[{"{", 
+            RowBox[{"Length", "[", "threeedgedatatwo", "]"}], "}"}]}], 
+          "]"}]}], ";", " ", 
+        RowBox[{"stringstart", " ", "=", " ", 
+         RowBox[{"KeyDrop", "[", 
+          RowBox[{"stringstart", ",", 
+           RowBox[{"{", 
+            RowBox[{"keys", "+", "1"}], "}"}]}], "]"}]}], ";", 
+        RowBox[{"stringcrosstwo", " ", "=", " ", 
+         RowBox[{"KeyDrop", "[", 
+          RowBox[{"stringcrosstwo", ",", 
+           RowBox[{"{", 
+            RowBox[{"keys", "+", "1"}], "}"}]}], "]"}]}], ";", 
+        RowBox[{"fused", " ", "=", "  ", 
+         RowBox[{
+          RowBox[{"y", "^", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "2"}], "*", 
+             RowBox[{"Sign", "[", 
+              RowBox[{"onecrossing", "[", 
+               RowBox[{"[", "1", "]"}], "]"}], "]"}]}], ")"}]}], "*", 
+          RowBox[{"SLthreeRaw", "[", 
+           RowBox[{"localcrossdatatwo", ",", "threeedgedatatwo", ",", 
+            RowBox[{"librarysizetwo", "-", "1"}], ",", "stringstart", ",", 
+            "stringcrosstwo"}], "]"}]}]}], ";", "\[IndentingNewLine]", 
+        RowBox[{"localcrossdatathree", " ", "=", " ", 
+         RowBox[{"Drop", "[", 
+          RowBox[{"localcrossdatathree", ",", 
+           RowBox[{"{", "1", "}"}]}], "]"}]}], ";", " ", 
+        "\[IndentingNewLine]", 
+        RowBox[{"fusedstrings", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"y", "^", 
+           RowBox[{"(", 
+            RowBox[{"Sign", "[", 
+             RowBox[{"onecrossing", "[", 
+              RowBox[{"[", "1", "]"}], "]"}], "]"}], ")"}]}], "*", 
+          RowBox[{"SLthreeRaw", "[", 
+           RowBox[{"localcrossdatathree", ",", "threeedgedatathree", ",", 
+            RowBox[{"librarysizetwo", "+", "2", " ", "-", " ", 
+             RowBox[{"Count", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"Lookup", "[", 
+                 RowBox[{"miscellaneous", ",", 
+                  RowBox[{"Norm", "[", 
+                   RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "]"}], "[", 
+                RowBox[{"[", "2", "]"}], "]"}], ",", 
+               RowBox[{"Norm", "[", 
+                RowBox[{"onecrossing", "[", 
+                 RowBox[{"[", "1", "]"}], "]"}], "]"}]}], "]"}]}], ",", 
+            "miscellaneous", ",", "stringcrossthree"}], "]"}]}]}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"Return", "[", 
+         RowBox[{"Simplify", "[", 
+          RowBox[{"fusedstrings", "+", "fused"}], "]"}], "]"}], ";"}], 
+       "\[IndentingNewLine]", ")"}]}], "]"}]}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "Given", " ", "Gauss", " ", "notation", " ", "of", " ", "a", " ", 
+      "knot"}], ",", " ", 
+     RowBox[{
+     "convert", " ", "it", " ", "to", " ", "my", " ", "raw", " ", "notation", 
+      " ", "for", " ", "computation"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"GausstoRaw", "[", "gaussnotation_", "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "protothreeedgedata", ",", "bit", ",", "librarysizetwo", ",", 
+        "countfour", ",", "byte", ",", "flatgauss", ",", "protostringdata", 
+        ",", "otherprotocross", ",", "onecrossing", ",", "newarray", ",", 
+        "protocross", ",", "counttwo", ",", "counter", ",", "numslices", ",", 
+        "localcrossdatatwo", ",", "protostringlist", ",", "protostartenddata",
+         ",", "newedge", ",", "count", ",", "localcrossdata", ",", 
+        "threeedgedata", ",", "librarysize", ",", "stringend", ",", 
+        "protoedge", ",", "stringcrosses"}], "}"}], ",", 
+      RowBox[{"(", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Flatten", "[", "gaussnotation", "]"}], "==", " ", 
+           "gaussnotation"}], ",", " ", 
+          RowBox[{
+           RowBox[{"flatgauss", " ", "=", " ", 
+            RowBox[{"{", "gaussnotation", "}"}]}], ";", 
+           RowBox[{"Return", "[", 
+            RowBox[{"GausstoRaw", "[", "flatgauss", "]"}], "]"}], ";"}]}], 
+         "]"}], ";", 
+        RowBox[{"librarysizetwo", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"Length", "[", 
+           RowBox[{"Flatten", "[", "gaussnotation", "]"}], "]"}], "/", 
+          "2"}]}], ";", " ", 
+        RowBox[{"bit", " ", "=", " ", "1"}], ";", 
+        RowBox[{"protothreeedgedata", " ", "=", " ", 
+         RowBox[{"Array", "[", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"Array", "[", 
+             RowBox[{
+              RowBox[{"0", "&"}], ",", "3"}], "]"}], "&"}], ",", 
+           "librarysizetwo"}], "]"}]}], ";", " ", 
+        RowBox[{"protostartenddata", " ", "=", " ", 
+         RowBox[{"{", "}"}]}], ";", " ", 
+        RowBox[{"protostringdata", " ", "=", " ", 
+         RowBox[{"{", "}"}]}], ";", 
+        RowBox[{"protostringlist", " ", "=", " ", 
+         RowBox[{"{", "}"}]}], ";", 
+        RowBox[{"otherprotocross", " ", "=", " ", 
+         RowBox[{"Array", "[", 
+          RowBox[{
+           RowBox[{"0", "&"}], ",", "librarysizetwo"}], "]"}]}], ";", 
+        RowBox[{"protocross", " ", "=", " ", "otherprotocross"}], ";", 
+        RowBox[{"counter", " ", "=", " ", 
+         RowBox[{"{", 
+          RowBox[{"0", ",", "0"}], "}"}]}], ";", 
+        RowBox[{"newarray", " ", "=", " ", 
+         RowBox[{"Array", "[", 
+          RowBox[{
+           RowBox[{"0", "&"}], ",", "librarysizetwo"}], "]"}]}], ";", 
+        RowBox[{"byte", " ", "=", " ", "1"}], ";", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"countfour", " ", "=", " ", "1"}], ",", " ", 
+          RowBox[{"countfour", " ", "<=", " ", 
+           RowBox[{"Length", "[", "gaussnotation", "]"}]}], ",", " ", 
+          RowBox[{"countfour", "++"}], ",", 
+          RowBox[{
+           RowBox[{"onecrossing", " ", "=", " ", 
+            RowBox[{"gaussnotation", "[", 
+             RowBox[{"[", "countfour", "]"}], "]"}]}], ";", 
+           RowBox[{"librarysize", " ", "=", " ", 
+            RowBox[{
+             RowBox[{"Length", "[", "onecrossing", "]"}], "/", "2"}]}], ";", 
+           "  ", "\[IndentingNewLine]", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+             RowBox[{"count", " ", "<=", " ", 
+              RowBox[{"2", "*", "librarysize"}]}], ",", 
+             RowBox[{"count", "++"}], ",", "\[IndentingNewLine]", 
+             RowBox[{
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"otherprotocross", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}], "]"}], "]"}], 
+                 " ", "==", " ", "0"}], ",", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"otherprotocross", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}], "]"}], "]"}], 
+                  " ", "++"}], ";", 
+                 RowBox[{
+                  RowBox[{"protocross", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}], "]"}], "]"}], 
+                  " ", "=", " ", 
+                  RowBox[{"Sign", "[", 
+                   RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}]}], ";", 
+                 "\[IndentingNewLine]", 
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], ">", "0"}], ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}], "]"}], "]"}], 
+                    "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", "bit"}], 
+                    ";", 
+                    RowBox[{"protostringlist", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protostringlist", ",", 
+                    RowBox[{"{", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}], "}"}]}], 
+                    "]"}]}], ";"}], ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}], "]"}], "]"}], 
+                    "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", "bit"}], 
+                    ";", 
+                    RowBox[{
+                    RowBox[{"counter", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}]}], ";", 
+                    RowBox[{"bit", "++"}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}], "]"}], "]"}], 
+                    "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], " ", "=", " ", "bit"}], 
+                    ";", 
+                    RowBox[{"protostartenddata", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protostartenddata", ",", 
+                    RowBox[{"{", "counter", "}"}]}], "]"}]}], ";", 
+                    RowBox[{"counter", " ", "=", " ", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}], ",", "0"}], 
+                    "}"}]}], ";", 
+                    RowBox[{"protostringdata", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protostringdata", ",", 
+                    RowBox[{"{", "protostringlist", "}"}]}], "]"}]}], ";", 
+                    RowBox[{"protostringlist", " ", "=", " ", 
+                    RowBox[{"{", "}"}]}], ";", " ", 
+                    RowBox[{"newedge", " ", "=", " ", 
+                    RowBox[{"Norm", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}]}], ";"}]}], 
+                  "]"}], ";"}], ",", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"protoedge", " ", "=", " ", 
+                  RowBox[{"Norm", "[", 
+                   RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}]}], ";", 
+                 "\[IndentingNewLine]", " ", 
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"protocross", "[", 
+                    RowBox[{"[", "protoedge", "]"}], "]"}], "<", "0"}], ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", "protoedge", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", "bit"}], 
+                    ";", 
+                    RowBox[{"protostringlist", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protostringlist", ",", 
+                    RowBox[{"{", "protoedge", "}"}]}], "]"}]}], ";"}], ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", "protoedge", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", "bit"}], 
+                    ";", 
+                    RowBox[{
+                    RowBox[{"counter", "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], " ", "=", " ", 
+                    "protoedge"}], ";", 
+                    RowBox[{"bit", "++"}], ";", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", "protoedge", "]"}], "]"}], "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], " ", "=", " ", "bit"}], 
+                    ";", 
+                    RowBox[{"newedge", " ", "=", " ", "protoedge"}], ";", 
+                    RowBox[{"protostartenddata", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protostartenddata", ",", 
+                    RowBox[{"{", "counter", "}"}]}], "]"}]}], ";", 
+                    RowBox[{"counter", " ", "=", " ", 
+                    RowBox[{"{", 
+                    RowBox[{"protoedge", ",", "0"}], "}"}]}], ";", 
+                    RowBox[{"protostringdata", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protostringdata", ",", 
+                    RowBox[{"{", "protostringlist", "}"}]}], "]"}]}], ";", 
+                    RowBox[{"protostringlist", " ", "=", " ", 
+                    RowBox[{"{", "}"}]}], ";"}]}], "]"}], ";", " ", 
+                 RowBox[{
+                  RowBox[{"protothreeedgedata", "[", 
+                   RowBox[{"[", "protoedge", "]"}], "]"}], " ", "=", " ", 
+                  RowBox[{
+                   RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", "protoedge", "]"}], "]"}], "*", 
+                   RowBox[{"Sign", "[", 
+                    RowBox[{"onecrossing", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}]}]}], ";"}]}], 
+               "]"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]", " ", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"protothreeedgedata", "[", 
+              RowBox[{"[", "newedge", "]"}], "]"}], "[", 
+             RowBox[{"[", "3", "]"}], "]"}], " ", "=", " ", 
+            RowBox[{
+             RowBox[{"Sign", "[", 
+              RowBox[{
+               RowBox[{"protothreeedgedata", "[", 
+                RowBox[{"[", "newedge", "]"}], "]"}], "[", 
+               RowBox[{"[", "2", "]"}], "]"}], "]"}], "*", "byte"}]}], ";", 
+           " ", 
+           RowBox[{
+            RowBox[{"protostringdata", "[", 
+             RowBox[{"[", "byte", "]"}], "]"}], " ", "=", " ", 
+            RowBox[{"Join", "[", 
+             RowBox[{"protostringlist", ",", 
+              RowBox[{"protostringdata", "[", 
+               RowBox[{"[", "byte", "]"}], "]"}]}], "]"}]}], ";", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+             RowBox[{"count", " ", "<=", " ", 
+              RowBox[{"Length", "[", "protostringlist", "]"}]}], ",", 
+             RowBox[{"count", "++"}], ",", 
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"protothreeedgedata", "[", 
+                 RowBox[{"[", 
+                  RowBox[{"protostringlist", "[", 
+                   RowBox[{"[", "count", "]"}], "]"}], "]"}], "]"}], "[", 
+                RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", 
+               RowBox[{"byte", "*", 
+                RowBox[{"Sign", "[", 
+                 RowBox[{
+                  RowBox[{"protothreeedgedata", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"protostringlist", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "]"}], "]"}], "[", 
+                  RowBox[{"[", "1", "]"}], "]"}], "]"}]}]}], ";"}]}], "]"}], 
+           ";", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"protostartenddata", "[", 
+              RowBox[{"[", "byte", "]"}], "]"}], " ", "[", 
+             RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", "newedge"}], ";", 
+           " ", "\[IndentingNewLine]", 
+           RowBox[{"byte", " ", "=", " ", "bit"}], ";", 
+           RowBox[{"protostringlist", " ", "=", " ", 
+            RowBox[{"{", "}"}]}], ";"}]}], "\[IndentingNewLine]", "]"}], ";", 
+        "\[IndentingNewLine]", 
+        RowBox[{"localcrossdatatwo", " ", "=", " ", "protothreeedgedata"}], 
+        ";", " ", 
+        RowBox[{"stringend", " ", "=", " ", 
+         RowBox[{"<|", "|>"}]}], ";", " ", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+          RowBox[{"count", " ", "<=", " ", "librarysizetwo"}], ",", " ", 
+          RowBox[{"count", "++"}], ",", 
+          RowBox[{
+           RowBox[{"AssociateTo", "[", 
+            RowBox[{"stringend", ",", 
+             RowBox[{"count", "->", " ", 
+              RowBox[{"{", 
+               RowBox[{
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Norm", "[", 
+                   RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"protostartenddata", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", 
+                  RowBox[{"Norm", "[", 
+                   RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"protostartenddata", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "}"}], ",", 
+                RowBox[{"{", 
+                 RowBox[{
+                  RowBox[{"Norm", "[", 
+                   RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"protostartenddata", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], "[", 
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], ",", 
+                  RowBox[{"Norm", "[", 
+                   RowBox[{
+                    RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", 
+                    RowBox[{
+                    RowBox[{"protostartenddata", "[", 
+                    RowBox[{"[", "count", "]"}], "]"}], "[", 
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], "[", 
+                    RowBox[{"[", "3", "]"}], "]"}], "]"}]}], "}"}]}], 
+               "}"}]}]}], "]"}], ";"}]}], "]"}], ";", " ", 
+        RowBox[{"stringcrosses", " ", "=", " ", 
+         RowBox[{"<|", "|>"}]}], ";", " ", 
+        RowBox[{"For", "[", 
+         RowBox[{
+          RowBox[{"count", " ", "=", " ", "1"}], ",", " ", 
+          RowBox[{"count", " ", "<=", " ", "librarysizetwo"}], ",", " ", 
+          RowBox[{"count", "++"}], ",", " ", 
+          RowBox[{
+           RowBox[{"protocross", " ", "=", " ", 
+            RowBox[{"protostringdata", "[", 
+             RowBox[{"[", "count", "]"}], "]"}]}], ";", " ", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"counttwo", " ", "=", " ", "1"}], ",", " ", 
+             RowBox[{"counttwo", " ", "<=", " ", 
+              RowBox[{"Length", "[", "protocross", "]"}]}], ",", 
+             RowBox[{"counttwo", "++"}], ",", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"protocross", "[", 
+                RowBox[{"[", "counttwo", "]"}], "]"}], " ", "=", " ", 
+               RowBox[{"{", 
+                RowBox[{
+                 RowBox[{"Norm", "[", 
+                  RowBox[{
+                   RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"protocross", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}], "]"}], "[", 
+                   RowBox[{"[", "2", "]"}], "]"}], "]"}], ",", 
+                 RowBox[{"Norm", "[", 
+                  RowBox[{
+                   RowBox[{"protothreeedgedata", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"protocross", "[", 
+                    RowBox[{"[", "counttwo", "]"}], "]"}], "]"}], "]"}], "[", 
+                   RowBox[{"[", "3", "]"}], "]"}], "]"}]}], "}"}]}], ";"}]}], 
+            "]"}], ";", 
+           RowBox[{"AssociateTo", "[", 
+            RowBox[{"stringcrosses", ",", 
+             RowBox[{"count", "->", " ", "protocross"}]}], "]"}], ";"}]}], 
+         "]"}], ";", " ", 
+        RowBox[{"Return", "[", 
+         RowBox[{"{", 
+          RowBox[{
+          "localcrossdatatwo", ",", "stringend", ",", "stringcrosses"}], 
+          "}"}], "]"}], ";"}], "\[IndentingNewLine]", ")"}]}], "]"}]}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"Transitionary", " ", "program"}], ",", " ", 
+     RowBox[{
+     "converts", " ", "Gauss", " ", "notation", " ", "to", " ", "raw", " ", 
+      "notation", " ", "and", " ", "computes", " ", "SL", 
+      RowBox[{"(", "3", ")"}]}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"SLthreeGauss", "[", "gaussknot_", "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "rawdata", ",", "localcrossdatatwo", ",", "threeedgedata", ",", 
+        "librarysize", ",", "stringend", ",", "stringcrosses"}], "}"}], ",", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"rawdata", " ", "=", " ", 
+         RowBox[{"GausstoRaw", "[", "gaussknot", "]"}]}], ";", 
+        RowBox[{"localcrossdatatwo", " ", "=", " ", 
+         RowBox[{"rawdata", "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], ";", 
+        RowBox[{"threeedgedata", " ", "=", " ", 
+         RowBox[{"{", "}"}]}], ";", " ", 
+        RowBox[{"librarysize", " ", "=", " ", 
+         RowBox[{
+          RowBox[{"Length", "[", 
+           RowBox[{"Flatten", "[", "gaussknot", "]"}], "]"}], "/", "2"}]}], 
+        ";", 
+        RowBox[{"stringend", " ", "=", " ", 
+         RowBox[{"rawdata", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], ";", 
+        RowBox[{"stringcrosses", " ", "=", " ", 
+         RowBox[{"rawdata", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], ";", " ", 
+        RowBox[{"Return", "[", 
+         RowBox[{"SLthreeRaw", "[", 
+          RowBox[{
+          "localcrossdatatwo", ",", "threeedgedata", ",", "librarysize", ",", 
+           "stringend", ",", "stringcrosses"}], "]"}], "]"}], ";"}], ")"}]}], 
+     "]"}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+    "Converts", " ", "Braid", " ", "notation", " ", "to", " ", "extended", 
+     " ", "Gauss", " ", "notation"}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"BraidtoGauss", "[", "braid_", "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{
+       "knotstring", ",", "count", ",", "bit", ",", "protostartenddata", ",", 
+        "middlelist", ",", "librarysize", ",", "protogaussbit", ",", 
+        "protogauss", ",", "strungbit", ",", "strung", ",", 
+        "threeedgedatathree"}], "}"}], ",", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"librarysize", " ", "=", " ", 
+         RowBox[{"Length", "[", "braid", "]"}]}], ";", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{"librarysize", " ", "==", " ", "2"}], ",", " ", 
+          RowBox[{
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"Length", "[", 
+               RowBox[{"braid", "[", 
+                RowBox[{"[", "2", "]"}], "]"}], "]"}], "!=", " ", "0"}], ",", 
+             RowBox[{
+              RowBox[{"Return", "[", 
+               RowBox[{"BraidtoGauss", "[", 
+                RowBox[{"braid", " ", "[", 
+                 RowBox[{"[", "2", "]"}], "]"}], "]"}], "]"}], ";"}]}], "]"}],
+            ";"}]}], "]"}], ";", " ", 
+        RowBox[{"threeedgedatathree", " ", "=", " ", 
+         RowBox[{"braid", "*", 
+          RowBox[{"Sign", "[", "braid", "]"}]}]}], ";", 
+        RowBox[{"strung", " ", "=", " ", 
+         RowBox[{"Array", "[", 
+          RowBox[{
+           RowBox[{"0", "&"}], ",", 
+           RowBox[{
+            RowBox[{"Max", "[", "threeedgedatathree", "]"}], "+", "1"}]}], 
+          "]"}]}], ";", 
+        RowBox[{"protostartenddata", " ", "=", " ", 
+         RowBox[{"<|", "|>"}]}], ";", " ", 
+        RowBox[{"k", " ", "=", " ", "1"}], ";", 
+        RowBox[{
+         RowBox[{"strung", "[", 
+          RowBox[{"[", "1", "]"}], "]"}], " ", "=", " ", "1"}], ";", " ", 
+        RowBox[{"bit", " ", "=", " ", "1"}], ";", " ", 
+        RowBox[{"protogauss", " ", "=", " ", 
+         RowBox[{"{", "}"}]}], ";", 
+        RowBox[{"protogaussbit", " ", "=", " ", 
+         RowBox[{"{", "}"}]}], ";", 
+        RowBox[{"strungbit", " ", "=", " ", "1"}], ";", 
+        RowBox[{"middlelist", " ", "=", " ", 
+         RowBox[{"Array", "[", 
+          RowBox[{
+           RowBox[{"0", "&"}], ",", "librarysize"}], "]"}]}], ";", "  ", 
+        RowBox[{"While", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Min", "[", "strung", "]"}], " ", "==", " ", "0"}], ",", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"strung", "[", 
+             RowBox[{"[", "bit", "]"}], "]"}], " ", "=", " ", "1"}], ";", " ", 
+           RowBox[{"For", "[", 
+            RowBox[{
+             RowBox[{"knotstring", " ", "=", " ", "1"}], ",", " ", 
+             RowBox[{"knotstring", " ", "<=", " ", "librarysize"}], ",", " ", 
+             RowBox[{"knotstring", "++"}], ",", " ", 
+             RowBox[{
+              RowBox[{"If", "[", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"threeedgedatathree", "[", 
+                  RowBox[{"[", "knotstring", "]"}], "]"}], " ", "==", " ", 
+                 "bit"}], ",", "\[IndentingNewLine]", 
+                RowBox[{
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"middlelist", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], " ", "==", " ", 
+                    "0"}], ",", " ", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"middlelist", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], " ", "=", " ", 
+                    "1"}], ";", " ", 
+                    RowBox[{"AssociateTo", "[", 
+                    RowBox[{"protostartenddata", ",", 
+                    RowBox[{"knotstring", "->", " ", "strungbit"}]}], "]"}], 
+                    ";", 
+                    RowBox[{"protogaussbit", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protogaussbit", ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"-", 
+                    RowBox[{"Sign", "[", 
+                    RowBox[{"braid", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], "]"}]}], "*", 
+                    "strungbit"}], "}"}]}], "]"}]}], ";", 
+                    RowBox[{"strungbit", "++"}], ";"}], ",", 
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"middlelist", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], " ", "=", " ", 
+                    "2"}], ";", " ", 
+                    RowBox[{"protogaussbit", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protogaussbit", ",", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"protostartenddata", ",", "knotstring"}], "]"}], 
+                    "}"}], "*", 
+                    RowBox[{"Sign", "[", 
+                    RowBox[{"braid", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], "]"}]}]}], 
+                    "]"}]}], ";"}]}], "]"}], ";", 
+                 RowBox[{"bit", "++"}], ";"}], ",", 
+                RowBox[{
+                 RowBox[{"If", "[", 
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"threeedgedatathree", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], " ", "==", " ", 
+                    RowBox[{"bit", "-", "1"}]}], ",", " ", 
+                   RowBox[{
+                    RowBox[{"If", "[", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"middlelist", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], " ", "==", " ", 
+                    "0"}], ",", " ", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"middlelist", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], " ", "=", " ", 
+                    "1"}], ";", " ", 
+                    RowBox[{"AssociateTo", "[", 
+                    RowBox[{"protostartenddata", ",", 
+                    RowBox[{"knotstring", "->", " ", "strungbit"}]}], "]"}], 
+                    ";", 
+                    RowBox[{"protogaussbit", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protogaussbit", ",", 
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"Sign", "[", 
+                    RowBox[{"braid", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], "]"}], "*", 
+                    "strungbit"}], "}"}]}], "]"}]}], ";", 
+                    RowBox[{"strungbit", "++"}], ";"}], ",", 
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"middlelist", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], " ", "=", " ", 
+                    "2"}], ";", " ", 
+                    RowBox[{"protogaussbit", " ", "=", " ", 
+                    RowBox[{"Join", "[", 
+                    RowBox[{"protogaussbit", ",", 
+                    RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{"Lookup", "[", 
+                    RowBox[{"protostartenddata", ",", "knotstring"}], "]"}], 
+                    "}"}], "*", 
+                    RowBox[{"Sign", "[", 
+                    RowBox[{"braid", "[", 
+                    RowBox[{"[", "knotstring", "]"}], "]"}], "]"}]}]}], 
+                    "]"}]}], ";"}]}], "]"}], ";", 
+                    RowBox[{"bit", "--"}], ";"}]}], "]"}], ";"}]}], "]"}], 
+              ";"}]}], "]"}], ";", 
+           RowBox[{"If", "[", 
+            RowBox[{
+             RowBox[{
+              RowBox[{"strung", "[", 
+               RowBox[{"[", "bit", "]"}], "]"}], " ", "==", " ", "1"}], ",", 
+             "  ", 
+             RowBox[{
+              RowBox[{"protogauss", " ", "=", " ", 
+               RowBox[{"Join", "[", 
+                RowBox[{"protogauss", ",", 
+                 RowBox[{"{", "protogaussbit", "}"}]}], "]"}]}], ";", 
+              RowBox[{"count", " ", "=", " ", "1"}], ";", " ", 
+              RowBox[{"While", "[", 
+               RowBox[{
+                RowBox[{
+                 RowBox[{"count", " ", "<=", " ", 
+                  RowBox[{"Length", "[", "strung", "]"}]}], "&&", 
+                 RowBox[{
+                  RowBox[{"strung", "[", 
+                   RowBox[{"[", "count", "]"}], "]"}], " ", "==", " ", 
+                  "1"}]}], "  ", ",", " ", 
+                RowBox[{
+                 RowBox[{"count", "++"}], ";"}]}], "]"}], ";", 
+              RowBox[{"bit", " ", "=", " ", "count"}], ";", " ", 
+              RowBox[{"protogaussbit", " ", "=", " ", 
+               RowBox[{"{", "}"}]}], ";"}]}], "]"}], ";"}]}], "]"}], ";", 
+        RowBox[{"If", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Length", "[", "protogauss", "]"}], "==", " ", "1"}], ",", 
+          " ", 
+          RowBox[{
+           RowBox[{"protogauss", " ", "=", " ", 
+            RowBox[{"Flatten", "[", "protogauss", "]"}]}], ";"}]}], "]"}], 
+        ";", 
+        RowBox[{"Return", "[", "protogauss", "]"}], ";"}], ")"}]}], "]"}]}], 
+   "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"BraidtoGauss", "[", 
+     RowBox[{"notbraid_", ",", "braid_"}], "]"}], ":=", " ", 
+    RowBox[{"BraidtoGauss", "[", "braid", "]"}]}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"SLthreeBraid", "[", "braid_", "]"}], ":=", " ", 
+    RowBox[{"Module", "[", 
+     RowBox[{
+      RowBox[{"{", "gauss", "}"}], ",", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"gauss", " ", "=", " ", 
+         RowBox[{"BraidtoGauss", "[", "braid", "]"}]}], ";", 
+        RowBox[{"Return", "[", 
+         RowBox[{"SLthreeGauss", "[", "gauss", "]"}], "]"}], ";"}], ")"}]}], 
+     "]"}]}], "\[IndentingNewLine]"}]}]], "Input",
+ CellChangeTimes->CompressedData["
+1:eJwlz21Ik2EUh/FhlOESX0KQBFMCM63cIMpEayNTs6EhtULKtqe5JSWLBaYr
+zCAiwrKYyCoiyYfSZRprkaZkfcgG4or1YmjRWiFaqzBxFUS16+7D4cc5f86B
+ky5ZK6qjFApFVqSwb/Epg/JdSHsk8N8DRVdM+LLWWYOm5Bwrat6rhR57bwvq
+0wYuYFbbl/Vx9JvlPFxgLduIn9RtGnQrc8sxf0WBHkPGripUuZdLaHenmLFo
+YYVFzC3mWvQ1FdrQHL3jJNpmq0+jJibWgcmtKuHK7g0yalPjb4h748UeXFNy
+5h4Gv0qDaJKHhQNbc5+gN0Hy4qG+7FGsX5fjw9a7dS/wzXHHmNhr1r3FjyZ/
+UOS2zhnx14ehMN6f2PkXp86q58WTf8/U4+tw+25UjO0z4FDDfuGretmE3qcN
+FrSlnO9FQ0dJP94e7h7BXVdvCTuMe5/hgx+T43guaiSEgX6fMKPS+Buvh8zC
+8NK59ISIiWufL8OHroJsjHWVqrDzmqxB56YWLf6cPVaMhfODOsyYubkNXd/K
+t4s+cGkPftZXSdgzXdqEmdM+Jzbb69rRv7rGg/m/Hk/g4EVddGLEpMtbFmGe
+YyoO/al3knCVtXEJ9owq0/DgibnD+OdR2VGsnIxpxH/2KlwH
+  "],ExpressionUUID->"c3429f12-b526-446d-8371-0acd2c938510"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SLthreeBraid", "[", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", "1", ",", "1"}], "}"}], "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"Example", " ", "1", 
+    RowBox[{"a", ":", " ", 
+     RowBox[{
+     "the", " ", "trefoil", " ", "with", " ", "braid", " ", "notation"}]}]}], 
+   " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.87503635160507*^9, 3.8750364102043*^9}, {
+  3.8750503514976397`*^9, 3.8750503545978155`*^9}, {3.8750504356620855`*^9, 
+  3.875050439266692*^9}},ExpressionUUID->"c9e241a8-1007-4296-a69c-\
+54e46c9d6f36"],
+
+Cell[BoxData[
+ RowBox[{"1", "+", 
+  FractionBox["1", 
+   SuperscriptBox["y", "12"]], "-", 
+  SuperscriptBox["y", "12"]}]], "Output",
+ CellChangeTimes->{3.875036375943076*^9, 3.8750444312167215`*^9, 
+  3.8750448096185317`*^9, 3.8750451495912256`*^9, 3.875048217963725*^9},
+ CellLabel->"Out[87]=",ExpressionUUID->"a32f53bb-654f-49ab-a5c2-951c54d46c39"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SLthreeGauss", "[", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", 
+     RowBox[{"-", "2"}], ",", "3", ",", "1", ",", "2", ",", "3"}], "}"}], 
+   "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"Example", " ", "1", 
+    RowBox[{"b", ":", " ", 
+     RowBox[{
+     "the", " ", "trefoil", " ", "with", " ", "extended", " ", "Gauss", " ", 
+      "notation"}]}]}], " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.875044281130127*^9, 3.875044308748418*^9}, 
+   3.875044419190978*^9, {3.87505041623823*^9, 3.875050449319335*^9}},
+ CellLabel->"In[89]:=",ExpressionUUID->"2e059b7b-f1e2-4663-9b42-191f27484ca0"],
+
+Cell[BoxData[
+ RowBox[{"1", "+", 
+  FractionBox["1", 
+   SuperscriptBox["y", "12"]], "-", 
+  SuperscriptBox["y", "12"]}]], "Output",
+ CellChangeTimes->{3.875044309859228*^9, 3.8750444339840302`*^9, 
+  3.875044814224681*^9, 3.8750482209798107`*^9, 3.87505045059668*^9},
+ CellLabel->"Out[89]=",ExpressionUUID->"73ebf16b-d10f-43b6-b557-f4e10322b611"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SLthreeGauss", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", 
+       RowBox[{"-", "2"}], ",", "3", ",", 
+       RowBox[{"-", "4"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"4", ",", 
+       RowBox[{"-", "5"}], ",", 
+       RowBox[{"-", "2"}], ",", 
+       RowBox[{"-", "6"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", "6", ",", 
+       RowBox[{"-", "3"}], ",", 
+       RowBox[{"-", "5"}]}], "}"}]}], "}"}], "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"Example", " ", "2"}], ":", " ", 
+    RowBox[{"the", " ", "Borromean", " ", "rings"}]}], " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.8750504998436594`*^9, 3.8750505053900194`*^9}, {
+  3.8750505817206964`*^9, 3.87505070217345*^9}, {3.8750508829979715`*^9, 
+  3.875050885932588*^9}, {3.8750510246737776`*^9, 3.875051027271166*^9}, {
+  3.875051192241989*^9, 
+  3.8750511972234974`*^9}},ExpressionUUID->"0202cc2e-676e-49ec-80ce-\
+92d580a1f587"],
+
+Cell[BoxData[
+ RowBox[{"5", "-", 
+  FractionBox["1", 
+   SuperscriptBox["y", "24"]], "+", 
+  FractionBox["2", 
+   SuperscriptBox["y", "18"]], "+", 
+  FractionBox["1", 
+   SuperscriptBox["y", "12"]], "+", 
+  SuperscriptBox["y", "12"], "+", 
+  RowBox[{"2", " ", 
+   SuperscriptBox["y", "18"]}], "-", 
+  SuperscriptBox["y", "24"]}]], "Output",
+ CellChangeTimes->{{3.8750506577097673`*^9, 3.875050671122617*^9}, 
+   3.875050895557895*^9, 3.8750510286882305`*^9},
+ CellLabel->"Out[95]=",ExpressionUUID->"ab23a9ca-4551-4df6-a60d-454caa2db6f4"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "Orientation", " ", "can", " ", "have", " ", "a", " ", "nontrivial", " ", 
+    "effect", " ", "on", " ", "the", " ", "SL", 
+    RowBox[{"(", "3", ")"}], " ", "invariant", " ", "of", " ", "links"}], " ",
+    "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"SLthreeGauss", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", 
+       RowBox[{"-", "2"}], ",", "3", ",", 
+       RowBox[{"-", "4"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"1", ",", "2", ",", "3", ",", "4"}], "}"}]}], "}"}], "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"Example", " ", "3", 
+    RowBox[{"a", ":", " ", 
+     RowBox[{
+      RowBox[{"Solomon", "'"}], "s", " ", "seal"}], ":", " ", 
+     RowBox[{
+     "both", " ", "link", " ", "components", " ", "are", " ", "oriented", " ",
+       "the", " ", "same", " ", "way"}]}]}], " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.8750507067766113`*^9, 3.8750507397770643`*^9}, {
+  3.8750508888305855`*^9, 3.8750508910384264`*^9}, {3.8750512042801175`*^9, 
+  3.8750512535993056`*^9}, {3.8750513286948085`*^9, 3.8750513688144093`*^9}, {
+  3.8750521656287813`*^9, 
+  3.875052204748014*^9}},ExpressionUUID->"e9484156-e371-4e35-9601-\
+90778b36d19d"],
+
+Cell[BoxData[
+ RowBox[{
+  FractionBox["1", 
+   SuperscriptBox["y", "14"]], "+", 
+  FractionBox["1", 
+   SuperscriptBox["y", "2"]], "+", 
+  SuperscriptBox["y", "16"]}]], "Output",
+ CellChangeTimes->{3.875050741608615*^9, 3.8750508929273767`*^9, 
+  3.875051254792837*^9},
+ CellLabel->"Out[96]=",ExpressionUUID->"c1d8e56b-dab2-4712-b01f-0136412ad12f"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SLthreeGauss", "[", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"1", ",", 
+       RowBox[{"-", "2"}], ",", "3", ",", 
+       RowBox[{"-", "4"}]}], "}"}], ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", "4"}], ",", 
+       RowBox[{"-", "3"}], ",", 
+       RowBox[{"-", "2"}], ",", 
+       RowBox[{"-", "1"}]}], "}"}]}], "}"}], "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"Example", " ", "3", 
+    RowBox[{"b", ":", " ", 
+     RowBox[{
+      RowBox[{"Solomon", "'"}], "s", " ", "seal"}], ":", " ", 
+     RowBox[{"the", " ", "components", " ", "are", " ", "oriented", " ", 
+      RowBox[{"oppositely", "."}]}]}]}], "*)"}]}]], "Input",
+ CellChangeTimes->{{3.875051262582148*^9, 3.87505132013058*^9}, {
+  3.875052207958582*^9, 
+  3.875052212204193*^9}},ExpressionUUID->"3e9ec3ca-b7fd-4abb-b527-\
+fe9d52c21850"],
+
+Cell[BoxData[
+ RowBox[{
+  FractionBox["1", 
+   SuperscriptBox["y", "10"]], "+", 
+  FractionBox["1", 
+   SuperscriptBox["y", "4"]], "+", 
+  SuperscriptBox["y", "8"], "-", 
+  SuperscriptBox["y", "20"], "+", 
+  SuperscriptBox["y", "26"]}]], "Output",
+ CellChangeTimes->{3.8750512905219707`*^9},
+ CellLabel->"Out[97]=",ExpressionUUID->"3ae2dd50-36f9-4cd5-b53b-246c4824b480"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SLthreeBraid", "[", 
+   RowBox[{"{", 
+    RowBox[{
+    "1", ",", "1", ",", "1", ",", "1", ",", "1", ",", "1", ",", "1", ",", "1",
+      ",", "1", ",", "1"}], "}"}], "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"Example", " ", "4"}], ":", " ", 
+     RowBox[{
+      RowBox[{"SL", 
+       RowBox[{"(", "3", ")"}], " ", "of", " ", "2"}], "-", 
+      RowBox[{"torus", " ", "knots", " ", "are", " ", "very", " ", 
+       RowBox[{"simple", ":", " ", 
+        RowBox[{
+        "given", " ", "n", " ", "positive", " ", "crossings"}]}]}]}]}], ",", 
+    " ", 
+    RowBox[{
+     RowBox[{"SL", 
+      RowBox[{"(", "3", ")"}], " ", "is", " ", 
+      RowBox[{"y", "^", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "6"}], "-", 
+         RowBox[{"2", "n"}]}], ")"}]}]}], " ", "+", " ", 
+     RowBox[{"y", "^", 
+      RowBox[{"(", 
+       RowBox[{"6", "-", 
+        RowBox[{"2", "n"}]}], ")"}]}], " ", "+", " ", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"-", "1"}], ")"}], "^", "n"}], " ", "*", " ", 
+      RowBox[{"y", "^", 
+       RowBox[{"(", 
+        RowBox[{"4", "n"}], ")"}]}]}]}]}], " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.8750513874576454`*^9, 3.8750514956842103`*^9}, {
+  3.875051537179242*^9, 3.8750515512111425`*^9}, {3.875051596421646*^9, 
+  3.875051710859212*^9}},ExpressionUUID->"8cddf7b7-84c2-4f11-a36d-\
+8b8b3f4df52b"],
+
+Cell[BoxData[
+ RowBox[{
+  FractionBox["1", 
+   SuperscriptBox["y", "26"]], "+", 
+  FractionBox["1", 
+   SuperscriptBox["y", "14"]], "+", 
+  SuperscriptBox["y", "40"]}]], "Output",
+ CellChangeTimes->{{3.875051400573261*^9, 3.875051463186144*^9}, 
+   3.875051498121063*^9, {3.875051683798373*^9, 3.8750516938673244`*^9}},
+ CellLabel->
+  "Out[104]=",ExpressionUUID->"a6f5547a-7fec-445b-a03c-e1086b742eb0"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SLthreeBraid", "[", 
+   RowBox[{"{", 
+    RowBox[{"1", ",", 
+     RowBox[{"-", "2"}], ",", "1", ",", 
+     RowBox[{"-", "2"}]}], "}"}], "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"Example", " ", "5"}], ":", " ", 
+    RowBox[{
+     RowBox[{"The", " ", "figure"}], "-", 
+     RowBox[{
+     "eight", " ", "knot", " ", "has", " ", "a", " ", "symmetric", " ", 
+      "polynomial", " ", "due", " ", "to", " ", "it", " ", "being", " ", 
+      "amphichiral"}]}]}], " ", "*)"}]}]], "Input",
+ CellChangeTimes->{{3.8750518860413876`*^9, 
+  3.875051919440381*^9}},ExpressionUUID->"665204f8-55ee-41d6-a634-\
+3ca082b1a7f1"],
+
+Cell[BoxData[
+ RowBox[{"1", "+", 
+  FractionBox["1", 
+   SuperscriptBox["y", "18"]], "-", 
+  FractionBox["1", 
+   SuperscriptBox["y", "6"]], "-", 
+  SuperscriptBox["y", "6"], "+", 
+  SuperscriptBox["y", "18"]}]], "Output",
+ CellChangeTimes->{3.875051893906438*^9},
+ CellLabel->
+  "Out[105]=",ExpressionUUID->"3b1e735b-2cd1-4249-b60a-d6ffea3b8091"]
+}, Open  ]]
+},
+WindowSize->{1924, 981},
+WindowMargins->{{106, Automatic}, {Automatic, 30}},
+Magnification:>1.1 Inherited,
+FrontEndVersion->"12.3 for Microsoft Windows (64-bit) (July 9, 2021)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"7d8b3d52-2b2b-4e97-9512-caf5e8273324"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 142246, 3072, 7082, "Input",ExpressionUUID->"c3429f12-b526-446d-8371-0acd2c938510"],
+Cell[CellGroupData[{
+Cell[142829, 3096, 559, 14, 33, "Input",ExpressionUUID->"c9e241a8-1007-4296-a69c-54e46c9d6f36"],
+Cell[143391, 3112, 350, 7, 59, "Output",ExpressionUUID->"a32f53bb-654f-49ab-a5c2-951c54d46c39"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[143778, 3124, 626, 15, 33, "Input",ExpressionUUID->"2e059b7b-f1e2-4663-9b42-191f27484ca0"],
+Cell[144407, 3141, 347, 7, 59, "Output",ExpressionUUID->"73ebf16b-d10f-43b6-b557-f4e10322b611"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[144791, 3153, 1001, 27, 33, "Input",ExpressionUUID->"0202cc2e-676e-49ec-80ce-92d580a1f587"],
+Cell[145795, 3182, 537, 14, 59, "Output",ExpressionUUID->"ab23a9ca-4551-4df6-a60d-454caa2db6f4"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[146369, 3201, 1272, 30, 76, "Input",ExpressionUUID->"e9484156-e371-4e35-9601-90778b36d19d"],
+Cell[147644, 3233, 348, 9, 59, "Output",ExpressionUUID->"c1d8e56b-dab2-4712-b01f-0136412ad12f"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[148029, 3247, 874, 25, 33, "Input",ExpressionUUID->"3e9ec3ca-b7fd-4abb-b527-fe9d52c21850"],
+Cell[148906, 3274, 370, 10, 59, "Output",ExpressionUUID->"3ae2dd50-36f9-4cd5-b53b-246c4824b480"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[149313, 3289, 1427, 41, 33, "Input",ExpressionUUID->"8cddf7b7-84c2-4f11-a36d-8b8b3f4df52b"],
+Cell[150743, 3332, 402, 10, 59, "Output",ExpressionUUID->"a6f5547a-7fec-445b-a03c-e1086b742eb0"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[151182, 3347, 660, 18, 33, "Input",ExpressionUUID->"665204f8-55ee-41d6-a634-3ca082b1a7f1"],
+Cell[151845, 3367, 347, 10, 59, "Output",ExpressionUUID->"3b1e735b-2cd1-4249-b60a-d6ffea3b8091"]
+}, Open  ]]
+}
+]
+*)
+
