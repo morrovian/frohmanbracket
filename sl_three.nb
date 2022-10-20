@@ -72,7 +72,7 @@ Cell[BoxData[
      "of", " ", "the", " ", "starting", " ", "and", " ", "ending", " ", 
      "crossings", " ", "of", " ", "a", " ", "strand"}], ",", " ", 
     RowBox[{
-    "as", " ", "well", " ", "as", " ", "the", " ", "other", " ", "strand", 
+    "as", " ", "well", " ", "as", " ", "the", " ", "other", " ", "strands", 
      " ", "it", " ", "passes", " ", 
      RowBox[{"over", ".", "\[IndentingNewLine]", "Because"}], " ", 
      "computing", " ", "SL", 
