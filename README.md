@@ -6,7 +6,7 @@ Alternatively, for those who use Python or want to read the code (Mathematica no
 
 If you are simply experimenting on the code, download Tangela.py and run it. You essentially have two options for computing a polynomial.
 
-If you're trying to compute the polynomial of a knot you already have some info about (like it's listing in the knot table), you can look
+If you're trying to compute the polynomial of a knot you already have some info about (like its listing in the knot table), you can look
 up the braid notation at https://knotinfo.math.indiana.edu/index2.php to get the fastest results.
 
 E.g. a figure-eight in KnotInfo has braid notation {1,-2,1,-2}. Run this in Tangela.py as "slthree_braid([1,-2,1,-2])" to get "1y^18 - 1y^6 + 1 - 1y^-6 + 1y^-18". Notice that in KnotInfo, the notation is in curly brackets, but in Python, it is put in as square brackets.
